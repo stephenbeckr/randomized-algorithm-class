@@ -34,3 +34,10 @@ t2 = toc;
 fprintf('Frobenius norm is %e, took %f seconds\n', s^2, t2 );
 
 fprintf('Access via column vs row is %.1fx faster\n', t2/t1 );
+
+
+%% Extra: can you tell what's the difference?
+% Why do we get different values? Why is one slower?
+X   = randn(5e3);
+tic; s1=norm(X(:)); toc
+tic; s2=norm(X); toc
