@@ -35,6 +35,19 @@ fprintf('Frobenius norm is %e, took %f seconds\n', s^2, t2 );
 
 fprintf('Access via column vs row is %.1fx faster\n', t2/t1 );
 
+%% or, if you really want to loop over rows, do so on the transpos
+% i.e., first transpose, then loop over columns.
+disp('Compute Frobenius norm by looping over columns of transpose');
+s=0; 
+tic
+At  = A'; % include the time to transpose
+for i=1:size(A,2)
+    s = s + norm( At(:,i) )^2; 
+end
+t1=toc;
+fprintf('Frobenius norm is %e, took %f seconds\n\n', s^2, t1 );
+
+
 
 %% Extra: can you tell what's the difference?
 % Why do we get different values? Why is one slower?
