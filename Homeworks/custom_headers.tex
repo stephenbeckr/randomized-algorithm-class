@@ -1,0 +1,174 @@
+% Some commonly used latex settings. Stephen Becker, July 2013
+\pagestyle{plain}
+%--------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem} 
+\newtheorem{fact}[theorem]{Fact} % added Jan 2014
+\newtheorem{assumption}[theorem]{Assumption} % added Jan 2014
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{remarks}[subsection]{Remarks}
+\newtheorem{example}[subsection]{Example}
+%\newtheorem{example}[theorem]{Example}
+%\floatname{algorithm}{Listing}
+\numberwithin{equation}{section}
+% Theorems
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{remark}{Remark}
+%\newtheorem{corollary}{Corollary}%[section]
+%\newtheorem{proposition}{Proposition}%[section]
+%\newtheorem{definition}{Definition}%[section] % number this the same as theorem and lemma
+
+
+%% commenting
+% Affect margins:
+%\setlength{\marginparwidth}{1.2in}
+\setlength{\marginparwidth}{.8in}
+\let\oldmarginpar\marginpar
+\renewcommand\marginpar[1]{\-\oldmarginpar[\raggedleft\footnotesize #1]%
+{\raggedright\footnotesize #1}}
+
+% macros for the outline
+\newcommand{\todo}{{\bf \textcolor{red}{TODO} }}
+\newcommand{\TODO}[1]{{\bf TODO: #1}}
+\newcommand{\red}{\textcolor{red}}
+\newcommand{\note}[1]{{\bf [{\em Note:} #1]}}
+
+% Editing commands
+\newcommand{\fix}[1]{\textcolor{red}{#1}}
+\usepackage[normalem]{ulem} % for sout, not needed for final version
+\newcommand{\add}[1]{\textcolor{blue}{#1}}
+\newcommand{\new}[1]{\textcolor{blue}{#1}} % synonym
+\newcommand{\del}[1]{{\color{Bittersweet}\sout{#1}}}
+\newcommand{\remove}[1]{{\color{Bittersweet}\sout{#1}}} % synonym
+
+% Better, use e.g., (with comma)
+%\newcommand\eg{e.g.\xspace}
+%\newcommand\ie{i.e.\xspace}
+
+
+
+
+
+\newcommand{\Id}{\text{\em I}}
+\newcommand{\OpId}{\mathcal{I}}
+
+% -- Operators --
+%First of all, one must of course recall that \operatorname and \DeclareMathOperator are provided by the amsopn package, which is automatically loaded by amsmath, but is also available standalone
+\DeclareMathOperator{\dom}{dom} 
+\DeclareMathOperator{\vect}{vec}            % vec(X) = X(:) in matlab notation
+\DeclareMathOperator{\VEC}{vec}            % vec(X) = X(:) in matlab notation
+\DeclareMathOperator{\mat}{mat}             % mat(x) = reshape(x,N,N)
+\DeclareMathOperator{\prox}{prox}           
+\DeclareMathOperator{\tr}{trace}
+\DeclareMathOperator{\logdet}{log det}
+%\newcommand{\sgn}{\textrm{sgn}}
+%\newcommand{\sign}{\textrm{sgn}}  or instead \operatorname
+\DeclareMathOperator{\shr}{shrink}
+\DeclareMathOperator{\shrink}{shrink}
+\DeclareMathOperator{\trunc}{trunc}
+\DeclareMathOperator{\range}{range}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\trace}{trace}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator*{\argmax}{argmax}        % puts subscripts in the right place
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\minimize}{minimize}
+\DeclareMathOperator*{\maximize}{maximize}
+% -- Misc --
+\newcommand\thalf{{\textstyle\frac{1}{2}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\e}{\mathrm{e}}
+\renewcommand{\i}{\imath}
+%\newcommand{\bmat}[1]{\begin{bmatrix} #1 \end{bmatrix}}
+\newcommand{\smax}{\sigma_{\max}}
+\newcommand{\smin}{\sigma_{\min}}
+%\newcommand{\T}{*}                           % (see also \transp, \adj below)
+\newcommand{\T}{T}                            % for the adjoint/transpose
+\newcommand{\transp}{T}
+\newcommand{\adj}{*}
+\newcommand{\psinv}{\dagger}
+% -- Mathbb --
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Rn}{\R^{n}}
+\newcommand{\Rmn}{\R^{m \times n}}
+\newcommand{\Rnn}{\R^{n \times n}}
+\newcommand{\Rmm}{\R^{m \times m}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\HH}{\mathcal{H}}                  % for Hilbert space (\H already defined).
+\newcommand{\EE}{\operatorname{\mathbb{E}}}   % for probability and expectations
+\newcommand{\E}{\operatorname{\mathbb{E}}} % is operatorname necessary?
+\renewcommand{\P}{\operatorname{\mathbb{P}}}  % for probability
+% -- Mathcal --
+\newcommand{\id}{\mathcal{I}} % identity operator
+\newcommand{\AAA}{\ensuremath{\mathcal{A}}}   % generic linear operator
+\newcommand{\cA}{\ensuremath{\mathcal{A}}}    % generic linear operator
+\newcommand{\K}{\ensuremath{\mathcal{K}}}     % cone
+\newcommand{\cK}{\ensuremath{\mathcal{K}}}    % cone
+\newcommand{\proj}{\ensuremath{\mathcal{P}}}  % Projection
+\newcommand{\PP}{\operatorname{\mathcal{P}}}  % for projections
+\newcommand{\lag}{\ensuremath{\mathcal{L}}}   % Lagrangian
+\renewcommand{\L}{{\mathcal L}}
+\newcommand{\N}{{\mathcal{N}}}                % for normal N(0,1) variables...
+\newcommand{\order}{\mathcal{O}}              % big O notation
+% -- Text shortcuts --
+\newcommand{\st}{\ensuremath{\;\text{such that}\;}}
+%\newcommand{\st}{\text{subject to}}
+\newcommand{\gs}{g_\text{sm}}             % smooth part of dual objective
+
+
+%  -- To get the ones vector to look nice (without using the bbold package)
+\newcommand{\bbfamily}{\fontencoding{U}\fontfamily{bbold}\selectfont}
+\newcommand{\textbb}[1]{{\bbfamily#1}}
+\DeclareMathAlphabet{\mathbbb}{U}{bbold}{m}{n}
+\newcommand{\ones}{\mathbbb 1}                % ones vector 
+
+% -- For := type stuff --
+%\newcommand{\defeq}{\mathrel{\mathop:}=}      % for definitions, e.g. z := y + 3
+%\newcommand{\defeq}{\triangleq}               %   another alternative
+%\newcommand{\defeq}{\equiv}                   %   another alternative
+\newcommand{\defeq}{\stackrel{\text{\tiny def}}{=}}  %   another alternative
+%\newcommand{\defeq}{\stackrel{\text{\tiny def}}{\hbox{\equalsfill}}}  % another alternative, doesn't work
+
+
+% -- Inner products and norms --
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+\newcommand{\restrict}[1]{\big\vert_{#1}}
+% If using < x | y > or { x | x < 0 }
+%http://tex.stackexchange.com/questions/498/mid-vertical-bar-vert-lvert-rvert-divides
+%use \mid not | (bar, bracket) for inner products and such.
+%\newcommand{\iprod}[2]{\left\langle #1 , #2 \right\rangle}
+\newcommand{\iprod}[2]{\left\langle #1,\,#2 \right\rangle}
+\newcommand{\iprodMed}[2]{\Bigl\langle #1 , #2 \Bigr\rangle}
+\newcommand{\scal}[2]{\left\langle{#1},\,{#2}\right\rangle}
+\newcommand{\norm}[1]{{\left\lVert{#1}\right\rVert}}
+\newcommand{\dist}[2]{\left\| #1 - #2 \right\|_2}
+\newcommand{\vectornormbig}[1]{\big\|#1\big\|}
+\newcommand{\vectornormmed}[1]{\big\|#1\big\|}
+
+
+% Linear algebra macros
+%\newcommand{\vct}[1]{\bm{#1}}
+%\newcommand{\mtx}[1]{\bm{#1}}
+\newcommand{\vct}[1]{{#1}}
+\newcommand{\mtx}[1]{{#1}}
+%\newcommand{\mtx}[1]{\mathsfsl{#1}}
+\renewcommand{\vec}[1]{{\boldsymbol{#1}}}
+
+
+
+% -- use amsthm instead --
+%\def \endprf{\hfill {\vrule height6pt width6pt depth0pt}\medskip}
+%\newenvironment{proof}{\noindent {\bf Proof} }{\endprf\par}
+%\newcommand{\qed}{{\unskip\nobreak\hfil\penalty50\hskip2em\vadjust{}
+           %\nobreak\hfil$\Box$\parfillskip=0pt\finalhyphendemerits=0\par}}
+
