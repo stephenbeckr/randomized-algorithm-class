@@ -1,8 +1,4 @@
-%\documentclass{article} % For LaTeX2e
-% from Jake Knigge
 \RequirePackage[l2tabu, orthodox]{nag}	% tells out-of-date packages
-%\documentclass[11pt]{article}
-%\documentclass[12pt, letterpaper]{scrartcl}
 \documentclass[10pt, letterpaper]{scrartcl}
 
 \usepackage{amssymb,amsfonts}
@@ -13,8 +9,6 @@
 \usepackage[margin=1in]{geometry}% can also add 'nohead', or leave blank
 
 %\usepackage{url}
-%\usepackage{multirow}
-%\usepackage{array} % IEEE recommends
 
 \usepackage{cancel} % for canceling terms
 
@@ -44,18 +38,6 @@
 }
 %% use withL: \lstinputlisting{myODEfunction.m}
 
-%\renewtheorem{theorem}{Theorem}
-%\usepackage{chngcntr}
-%\counterwithin{equation}{section}
-%\counterwithout{equation}{section}
-%\counterwithout{Theorem}{section}
-
-
-
-%\usepackage{pgf,tikz}
-%\usetikzlibrary{arrows}
-%\definecolor{ffqqqq}{rgb}{1.,0.,0.}
-%\usepackage[caption=false]{subfig}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -166,18 +148,18 @@ An arbitrary subset of these questions will be graded.
 
 \begin{enumerate}[align=left, leftmargin=*, label=\bfseries Problem \arabic*:]   
  
-    \item \ [MATH] Let $A$ be a $m \times n$ matrix, and $\sigma_{\max} = \|A\|$ the maximum singular value of $A$, and $\sigma_{\min}$ the minimum singular value of $A$ (which may be zero).  Prove that for all vectors $x,y\in \R^n$ that 
+    \item \ [MATH] Let $A$ be a $m \times n$ matrix with $m\ge n$, and $\sigma_{\max} = \|A\|$ the maximum singular value of $A$, and $\sigma_{\min}$ the minimum singular value of $A$ (which may be zero).  Prove that for all vectors $x,y\in \R^n$ that 
     \[
     \sigma_{\min} \| x-y\|_2 \le \|Ax-Ay\|_2 \le \sigma_{\max}\|x-y\|_2
     \]
-    (and note that there exist $x,y$ such that these inequalities are tight, so they cannot be improved).
+    (and note that there exist $x,y$ such that these inequalities are tight, so they cannot be improved). Note: the upper bound is still true even if $m < n$.
          
     \item \ [PROGRAMMING] Using the $10 \times 10^9$ matrix $U$ that is stored in the file \\ \texttt{/rc\_scratch/stbe1590/data\_U.mat} on the research computing (rc) filesystem, compute its spectral norm $\|U\|$.
     The file was saved in the ``version 7.3'' Matlab file format, which uses \href{https://www.hdfgroup.org/}{HDF5}.  The file is about 72 GB, so I suggest \emph{not} transferring it to your computer.
 
     \textbf{Deliverable}: What is $\|U\|$? And how much time did your code spend reading the data from disk, and how much time did it take to actually do the computations?
     
-    \emph{Hints}: on the rc login node, you must request a compute node. You should have access to the 2 special nodes on the Blanca cluster that the applied math department owns. To access these nodes, run \texttt{module load slurm/blanca} and then request an interactive session on one core of one of these nodes with the command \texttt{sinteractive --account blanca-appm}.  Now you have command line access on a compute node.  If you want to run Matlab, it's simplest to do it without the GUI.  First run \texttt{module load matlab} and then run \texttt{matlab -nodisplay} to launch a terminal version of Matlab. You can edit script files, and then call them from the Matlab command lines.  If you use Python, you can use Jupyter (TBD).
+    \emph{Hints}: on the rc login node, you must request a compute node. You should have access to the 2 special nodes on the Blanca cluster that the applied math department owns. To access these nodes, run \texttt{module load slurm/blanca} and then request an interactive session on one core of one of these nodes with the command \texttt{sinteractive -{}-account blanca-appm}.  Now you have command line access on a compute node.  If you want to run Matlab, it's simplest to do it without the GUI.  First run \texttt{module load matlab} and then run \texttt{matlab -nodisplay} to launch a terminal version of Matlab. You can edit script files, and then call them from the Matlab command lines.  If you use Python, you can use JupyterHub to run your Jupyter notebook so that the notebook runs in your web browser but the computation is done on the Blanca node; see \href{https://curc.readthedocs.io/en/latest/gateways/jupyterhub.html}{docs} and \href{https://jupyter.rc.colorado.edu/}{jupyter.rc.colorado.edu}.
     
     
     In Matlab, you can load just parts of the file by using the \texttt{matfile} command, rather than the \texttt{load} command. Please read the documentation of \texttt{matfile}.
