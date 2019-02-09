@@ -1,0 +1,213 @@
+\RequirePackage[l2tabu, orthodox]{nag}	% tells out-of-date packages
+\documentclass[10pt, letterpaper]{scrartcl}
+
+\usepackage{amssymb,amsfonts}
+\usepackage{amsthm} % if using theorems and proofs
+\usepackage[cmex10]{amsmath}
+\usepackage[usenames,dvipsnames,svgnames]{xcolor} % use like \textcolor{red}{..} or {\color{red} ...}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}% can also add 'nohead', or leave blank
+
+%\usepackage{url}
+
+\usepackage{cancel} % for canceling terms
+
+\usepackage{booktabs}
+
+\usepackage{pdfpages} % for including pdfs
+
+
+\usepackage{algpseudocode}  %algorithmicx
+\usepackage{wrapfig}
+
+%\usepackage{listings}
+\usepackage[numbered,framed]{matlab-prettifier}
+\lstdefinestyle{mat}{
+    frame=single,
+    language=matlab,
+    showstringspaces=false,
+    %  keywordstyle=\bfseries\color{blue},
+    %  commentstyle=\color{green},
+    %  stringstyle=\color{magenta},
+}
+\lstset{
+    style              = Matlab-editor,
+    basicstyle         = \mlttfamily,
+    escapechar         = ",
+    mlshowsectionrules = true,
+}
+%% use withL: \lstinputlisting{myODEfunction.m}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % important!
+
+\usepackage{hyperref}
+\hypersetup{pdfauthor={Stephen Becker},
+    pdftitle={},
+    colorlinks=true,
+    citecolor=MidnightBlue,
+    urlcolor=Bittersweet,
+}
+% -- Input macros and such --
+\IfFileExists{custom_headers.tex}{
+\input{custom_headers}}{
+\input{../custom_headers}}{
+}
+\let\oldenumerate\enumerate
+\renewcommand{\enumerate}{
+  \oldenumerate
+  \setlength{\itemsep}{1em}
+  \setlength{\parskip}{1em}
+  \setlength{\parsep}{0pt}
+}
+\usepackage{enumitem}
+%\setlist{noitemsep}
+% See http://mirrors.fe.up.pt/pub/CTAN/macros/latex/contrib/enumitem/enumitem.pdf
+% and now, set par indent to zero
+\newlength{\savedparindent}
+\setlength{\savedparindent}{\parindent}
+\setlist[enumerate]{listparindent=\savedparindent}
+%\setlength{\parindent}{0pt} % Jan 2017, HW 3/4, comment this out.
+
+\usepackage{xspace}
+%\newcommand{\collaboration}{\textbf{Collaboration Allowed}\xspace}
+%\newcommand{\nocollaboration}{\textbf{No Collaboration}\xspace}
+
+\renewcommand{\T}{\mathbb{T}}
+\newcommand{\fn}{\widehat{f}_n} % Fourier coefficients
+\newcommand{\spi}{\frac{1}{\sqrt{2\pi}}}
+\renewcommand{\H}{\mathcal{H}}
+\renewcommand{\phi}{\varphi}
+\DeclareMathOperator{\ran}{ran} % ker already defined, and with lower case
+
+\newcommand*\Laplace{\mathop{}\!\mathbin\bigtriangleup}
+\renewcommand{\SS}{\mathcal{S}} % Schwartz space
+
+% My solution environment
+%%\newenvironment{solution}{\setlength{\parindent}{\savedparindent}{\bfseries Solution}:}{}
+\makeatletter
+\newcommand\solParagraph{\@startsection{paragraph}{4}{\z@}%
+%    {-3.25ex \@plus -1ex \@minus -0.2ex}%
+    {-.55ex \@plus -1ex \@minus -0.2ex}%
+    {0.01pt}%
+    {\raggedsection\normalfont\sectfont\nobreak\size@paragraph}%
+}
+\makeatother
+\newenvironment{solution}{\setlength{\parindent}{\savedparindent}\solParagraph{Solution:}}{}
+
+%\newenvironment{solution}{\emph{Solution}:}{}
+\newenvironment{instructions}{}{}
+\newenvironment{SolnComment}{}{}
+\usepackage{comment} 
+
+%\def\solutions{1}  % define solutions  % !!! COMMENT or UNCOMMENT THIS LINE
+
+% NOTE: \begin{solution} should have NO SPACES BEFORE OR AFTER IT,
+% 	Can give very weird errors, hiding text, etc. See http://tex.stackexchange.com/a/91431/4603
+\ifdefined\solutions
+    \newcommand{\solTitle}[1]{#1}
+    \excludecomment{instructions}
+\else
+   \excludecomment{solution}% uncomment this line to hide solution
+   \newcommand{\solTitle}[1]{}
+   \excludecomment{SolnComment}
+\fi
+
+
+\title{Homework 5 \solTitle{Selected Solutions} \\APPM 4720/5720 Spring 2019 \\ Randomized Algorithms}
+%\author{Stephen Becker}
+\date{}
+\begin{document}
+\maketitle
+\vspace{-6em}
+\textbf{Due date}: Friday, Feb 15 2019
+
+Theme: Sketches   \hfill Instructor: Stephen Becker %Dr.\ Becker
+%\vspace{1em}
+
+\begin{instructions}
+\paragraph{Instructions}
+Collaboration with your fellow students is allowed and in fact recommended, although direct copying is not allowed.  Please write down the names of the students that you worked with. The internet is allowed for basic tasks only, not for directly looking for solutions.
+
+An arbitrary subset of these questions will be graded.
+
+\end{instructions}
+
+
+
+
+\begin{enumerate}[align=left, leftmargin=*, label=\sffamily\bfseries Problem \arabic*:]   
+ 
+    \item \ [READING and MATH] Read exercise 4.1.4 and Lemma 4.1.5 about approximate identities, from Vershynin's 2018 ``High-dimensional probability'' book. 
+    
+    \textbf{Deliverable}:
+    Do exercise 4.1.6: if $A\in \R^{m \times n}$ and all the singular values of $A$ are in the set $[1-\delta,1+\delta]$ for some $\delta>0$, 
+    then $\|A^TA - I_n \| \le 3 \max \left( \delta,\delta^2\right)$.  
+    Note: you may assume $m\ge n$, otherwise the hypothesis cannot be true unless $\delta \ge 1$ (why?) and the result is not interesting.
+    
+         
+    \item \ [PROGRAMMING] Try various sketches, do they converge to the identity  as number of repeated trials $N$ increases to $\infty$?
+    Each draw of a sketch $S_i$ is $m \times n$, but unlike the above exercise, here $m < n$, and instead of looking at $S_i^TS_i \approx I_n$, we ask about
+    \begin{equation}\label{eq:err}
+    \left\| \frac{1}{N}\sum_{i=1}^N S_i^TS_i  - I_n \right\|
+    \end{equation}
+    as $N\rightarrow \infty$ (in either spectral or Frobenius norm).
+    
+    Also consider a histogram of outcomes of sketching (1) $x\in \R^n$ where $x$ is very sparse, and (2) $x \in \R^n$ where all the entries of $x$ are similar in value. Look at $\|Sx\|^2/\|x\|^2$.
+    
+    Generate $S$ in all of the following manners:
+    \begin{enumerate}
+        \item Gaussian
+        \item Haar (cf.\ HW 2)
+        \item Fast Johnson-Lindenstrauss, $S=RHD$ where $R$ samples $m$ of $n$ rows uniformly at random, $H$ is the discrete cosine transform, and $D$ is diagonal with Rademacher random variables on the diagonal.
+        \item Simple sampling of $m$ of $n$ rows (e.g., $S=R$ in the above notation)
+        \item \emph{at least one} of the following variants
+            \begin{enumerate}
+                \item the approach from ``How to Fake Multiply by a Gaussian Matrix'' (Kapralov, Potluru, Woodruff, ICML 2016, \url{https://arxiv.org/abs/1606.05732})
+                \item the FJLT approach from the original FJLT paper, where $R$ is not simple sub-sampling but rather the matrix $R$ is such that each entry is $0$ with a certain probability, otherwise drawn from an appropriately scaled Gaussian (see ``Approximate nearest neighbors and the fast Johnson-Lindenstrauss transform'', Ailon and Chazelle, 2006, STOC, \url{https://dl.acm.org/citation.cfm?id=1132597})
+                \item The low-density parity check (LDPC) codes used for the $R$ term in the FJLT, from ``Low Rank Approximation using Error Correcting Coding Matrices'' (Ubaru, Mazumdar, Saad, ICML 205, 
+\url{http://proceedings.mlr.press/v37/ubaru15.html}).
+                \item CountSketch (``Simple and deterministic matrix sketching'', Edo Liberty, KDD 2013, \url{https://arxiv.org/abs/1206.0594}; or Clarkson and Woodruff, \url{https://doi.org/10.1145/3019134})
+                \item the approach from ``Very Sparse Random Projections'' (Li, Hastie, Church, KDD 2006, \url{https://dl.acm.org/citation.cfm?id=1150436}),
+                where each entry $S_{ij}$ is iid with value $\sqrt{3}$ with probability $1/6$, value $-\sqrt{3}$ with probability $1/6$, and value $0$ with probability $2/3$.
+                \item the $S=\text{const}\cdot  THG\Pi H B$ approach in eq.\ (7) from
+                ``Fastfood -- Approximating Kernel Expansions in Loglinear Time'' (Le, Sarl\'os, Smola, ICML 2013, \url{https://arxiv.org/abs/1408.3060})
+                \item Fast Johnson-Lindenstrauss, where $H$ is now a Hadamard transform instead of the DCT
+                \item Anything else you can find in the literature, e.g., see Fig.~\ref{fig:1}
+            \end{enumerate}
+        \end{enumerate}
+    
+    For each of the (at least 5) methods for $S$, plot the quantity in Eq.~\eqref{eq:err} as a function of $N$, and check that it behaves as you think it should. 
+    
+    Try with several choices of $n$ and $m$ to make sure your scaling is correct; most of the sketch matrices need a $\sqrt{n/m}$ or $\sqrt{1/m}$ scaling.
+    
+    \textbf{Deliverables}: A plot of the quantity in Eq.~\eqref{eq:err} as a function of $N$ for each type of sketch, and histograms of $\|Sx\|_2^2/\|x\|_2^2$ for the different types of sketches and the two types of $x$ mentioned above. Include at least code snippets for how you generated each type of matrix.
+    
+    Are these good metrics to look at? Can you think of other metrics to look at?
+    
+\begin{figure}
+    \centering
+    \includegraphics[width=.75\textwidth]{Figs/TypesOfSketches.pdf}
+    \caption{Types of sketches as listed in 
+        ``Weighted SGD for $\ell_p$ Regression with Randomized Preconditioning'' by Yang, Chow, R\'e and Mahoney, SODA 2016, \url{https://arxiv.org/abs/1502.03571}}.
+\label{fig:1}
+\end{figure}
+    
+    
+\begin{solution}
+TBD
+     % Matlab prettifier package
+     % see https://mirror.hmc.edu/ctan/macros/latex/contrib/matlab-prettifier/matlab-prettifier.pdf
+%\lstinputlisting{Figs/loadBigFile.m}
+%\begin{lstlisting}
+%% Code TBD
+%\end{lstlisting}
+
+\end{solution}
+
+
+
+\end{enumerate}   
+\end{document}
