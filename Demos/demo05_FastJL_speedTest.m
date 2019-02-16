@@ -9,6 +9,7 @@ Y   = S*X, X is M x N and S is m x M
 % addpath ~/'Google Drive'/GroupDocuments/MatlabUtilities/ % for countSketch
 addpath ~/Repos/randomized-algorithm-class/Code/ % from https://github.com/stephenbeckr/randomized-algorithm-class
 addpath ~/Repos/hadamard-transform/ % from https://github.com/jeffeverett/hadamard-transform
+
 %% Check Implementations for correctness
 X       = randn(2^13,100);
 [M,N]   = size(X); m = M/4;
@@ -17,7 +18,7 @@ X       = randn(2^13,100);
 % Check for normalization
 Hadamard_teaching_code( eye(4) )
 4*fwht(eye(4),[],'hadamard')
-
+%%
 tic
 Y1 = Hadamard_teaching_code(X);
 toc
@@ -30,12 +31,11 @@ toc
 fprintf('Hadamard code discrepancies: %g and %g\n', norm(Y1-Y2,'fro'), ...
     norm(Y1-Y3,'fro') );
 
-% == Count sketch --
+%% == Count sketch --
 d       = sign(randn(M,1));
-D       = spdiags(d,0,M,M);
+D       = spdiags(d,0,M,M); % bsxfun() is another efficient way to do this
 useTranspose    = true;
-flipPoint       = M;
-indx_map        = int64(randi(m,M,1));
+indx_map        = int64(randi(m,M,1)); % don't do this in C!
 Y2 = countSketch_BLAS(X'*D,indx_map,m,useTranspose)';
 
 % Do Count sketch slowly to check
@@ -81,22 +81,27 @@ for Mi  = 1:length( M_list )
     ALGO = 2; % Fast JL, DCT
     tic;
     D       = spdiags( sign(randn(M,1)) ,0,M,M);
+    ind     = randsample(M,m); % in Stats toolbox
+    ind     = randperm(M,m); % faster than randsample, doesn't need toolbox
     Times_setup(ALGO,Mi,trial)     = toc;
     Y       = dct( D*X );
+    Y       = Y(ind,:);
     Times(ALGO,Mi,trial) = toc;
     
     ALGO = 3;  % Fast JL, Hadamard
     tic;
     D       = spdiags( sign(randn(M,1)) ,0,M,M);
+    %ind     = randsample(M,m); % in Stats toolbox
+    ind     = randperm(M,m); % faster than randsample, doesn't need toolbox
     Times_setup(ALGO,Mi,trial)     = toc;
     Y       = hadamard_pthreads( D*X );
+    Y       = Y(ind,:);
     Times(ALGO,Mi,trial) = toc;
     
     ALGO = 4; % Count
     tic;
     D               = spdiags( sign(randn(M,1)) ,0,M,M);
     useTranspose    = true;
-    flipPoint       = M;
     indx_map        = int64(randi(m,M,1));
     Times_setup(ALGO,Mi,trial)     = toc;
     Y = countSketch_BLAS(X'*D,indx_map,m,useTranspose)';
@@ -112,8 +117,12 @@ for Mi  = 1:length( M_list )
         tic
         S   = sprandn(m,M,density); % this takes longer than the multiply!
         S   = sign(S);
+        % SS = logical(S); % alternative
         Times_setup(ALGO,Mi,trial)     = toc;
-        Y   = sqrt(s)*(S*X);
+        Y   = sqrt(s)*(S*X); 
+          % is this faster if S is "logical"? that doesn't work,
+          % it only has 1 bit, need 2 bits, but sparse of type uint8 not
+          % supported
         Times(ALGO,Mi,trial) = toc;
     end
   end
