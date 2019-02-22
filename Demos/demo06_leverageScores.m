@@ -29,9 +29,9 @@ Stephen Becker, Feb 14 2018
 
 rng(0);
 n   = 5;
-x   = 1:n; 
+% x   = 1:n; 
 % x   = -n:-1;
-% x   = -2:2;
+x   = -2:2;
 
 
 x = x';
@@ -40,7 +40,7 @@ y   = slope*x + .1*randn(n,1);
 
 slopeEst    = x\y;
 
-delta   = 0.9;
+delta   = -.9; % try +/-
 i = 1;
 figure(1); clf;
 
