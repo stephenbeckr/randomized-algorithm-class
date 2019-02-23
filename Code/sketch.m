@@ -112,13 +112,17 @@ switch lower(typeOfSketch)
         ind     = randperm( M2, m );
         subsample   = @(X) X(ind,:);
         
-        if exist('hadamard_pthreads','file')==3 && false
+        if exist('hadamard_pthreads','file')==3 
             fcn     = @(x) 1/sqrt(m)*subsample( hadamard_pthreads( D*upsample(full(x))) );
-        elseif exist('hadamard','file')==3 && false
+        elseif exist('hadamard','file')==3
             fcn     = @(x) 1/sqrt(m)*subsample( hadamard( D*upsample(full(x))) );
+        elseif exist('Hadamard_teaching_code','file')==2
+            % It turns out our naive Matlab implementation is better than
+            %   the fwht function!
+            fcn     = @(x) 1/sqrt(m)*subsample( Hadamard_teaching_code( ...
+                D*upsample(full(x)) ) );
         else
-            % use either Hadamard_teaching_code.m, which isn't so bad,
-            % or...
+            % This is slow!
             fcn     = @(x) (M2*sqrt(1/m))*subsample( fwht( D*upsample(full(x)), [], 'hadamard') );
         end
         
