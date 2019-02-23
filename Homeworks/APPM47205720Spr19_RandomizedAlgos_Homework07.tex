@@ -1,0 +1,204 @@
+\RequirePackage[l2tabu, orthodox]{nag}	% tells out-of-date packages
+\documentclass[10pt, letterpaper]{scrartcl}
+
+\usepackage{amssymb,amsfonts}
+\usepackage{amsthm} % if using theorems and proofs
+\usepackage[cmex10]{amsmath}
+\usepackage[usenames,dvipsnames,svgnames]{xcolor} % use like \textcolor{red}{..} or {\color{red} ...}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}% can also add 'nohead', or leave blank
+
+%\usepackage{url}
+
+\usepackage{cancel} % for canceling terms
+
+\usepackage{booktabs}
+
+\usepackage{pdfpages} % for including pdfs
+
+
+\usepackage{algpseudocode}  %algorithmicx
+\usepackage{wrapfig}
+
+%\usepackage{listings}
+\usepackage[numbered,framed]{matlab-prettifier}
+\lstdefinestyle{mat}{
+    frame=single,
+    language=matlab,
+    showstringspaces=false,
+    %  keywordstyle=\bfseries\color{blue},
+    %  commentstyle=\color{green},
+    %  stringstyle=\color{magenta},
+}
+\lstset{
+    style              = Matlab-editor,
+    basicstyle         = \mlttfamily,
+    escapechar         = ",
+    mlshowsectionrules = true,
+}
+%% use withL: \lstinputlisting{myODEfunction.m}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % important!
+
+\usepackage{hyperref}
+\hypersetup{pdfauthor={Stephen Becker},
+    pdftitle={},
+    colorlinks=true,
+    citecolor=MidnightBlue,
+    urlcolor=Bittersweet,
+}
+% -- Input macros and such --
+\IfFileExists{custom_headers.tex}{
+\input{custom_headers}}{
+\input{../custom_headers}}{
+}
+\let\oldenumerate\enumerate
+\renewcommand{\enumerate}{
+  \oldenumerate
+  \setlength{\itemsep}{1em}
+  \setlength{\parskip}{1em}
+  \setlength{\parsep}{0pt}
+}
+\usepackage{enumitem}
+%\setlist{noitemsep}
+% See http://mirrors.fe.up.pt/pub/CTAN/macros/latex/contrib/enumitem/enumitem.pdf
+% and now, set par indent to zero
+\newlength{\savedparindent}
+\setlength{\savedparindent}{\parindent}
+\setlist[enumerate]{listparindent=\savedparindent}
+%\setlength{\parindent}{0pt} % Jan 2017, HW 3/4, comment this out.
+
+\usepackage{xspace}
+%\newcommand{\collaboration}{\textbf{Collaboration Allowed}\xspace}
+%\newcommand{\nocollaboration}{\textbf{No Collaboration}\xspace}
+
+\renewcommand{\T}{\mathbb{T}}
+\newcommand{\fn}{\widehat{f}_n} % Fourier coefficients
+\newcommand{\spi}{\frac{1}{\sqrt{2\pi}}}
+\renewcommand{\H}{\mathcal{H}}
+\renewcommand{\phi}{\varphi}
+\DeclareMathOperator{\ran}{ran} % ker already defined, and with lower case
+
+\newcommand*\Laplace{\mathop{}\!\mathbin\bigtriangleup}
+\renewcommand{\SS}{\mathcal{S}} % Schwartz space
+
+% My solution environment
+%%\newenvironment{solution}{\setlength{\parindent}{\savedparindent}{\bfseries Solution}:}{}
+\makeatletter
+\newcommand\solParagraph{\@startsection{paragraph}{4}{\z@}%
+%    {-3.25ex \@plus -1ex \@minus -0.2ex}%
+    {-.55ex \@plus -1ex \@minus -0.2ex}%
+    {0.01pt}%
+    {\raggedsection\normalfont\sectfont\nobreak\size@paragraph}%
+}
+\makeatother
+\newenvironment{solution}{\setlength{\parindent}{\savedparindent}\solParagraph{Solution:}}{}
+
+%\newenvironment{solution}{\emph{Solution}:}{}
+\newenvironment{instructions}{}{}
+\newenvironment{SolnComment}{}{}
+\usepackage{comment} 
+
+%\def\solutions{1}  % define solutions  % !!! COMMENT or UNCOMMENT THIS LINE
+
+% NOTE: \begin{solution} should have NO SPACES BEFORE OR AFTER IT,
+% 	Can give very weird errors, hiding text, etc. See http://tex.stackexchange.com/a/91431/4603
+\ifdefined\solutions
+    \newcommand{\solTitle}[1]{#1}
+    \excludecomment{instructions}
+\else
+   \excludecomment{solution}% uncomment this line to hide solution
+   \newcommand{\solTitle}[1]{}
+   \excludecomment{SolnComment}
+\fi
+
+
+\title{Homework 7 \solTitle{Selected Solutions} \\APPM 4720/5720 Spring 2019 \\ Randomized Algorithms}
+%\author{Stephen Becker}
+\date{}
+\begin{document}
+\maketitle
+\vspace{-6em}
+\textbf{Due date}: Friday, Mar 1 2019
+
+Theme: Regression   \hfill Instructor: Stephen Becker %Dr.\ Becker
+%\vspace{1em}
+
+\begin{instructions}
+\paragraph{Instructions}
+Collaboration with your fellow students is allowed and in fact recommended, although direct copying is not allowed.  Please write down the names of the students that you worked with. The internet is allowed for basic tasks only, not for directly looking for solutions.
+
+An arbitrary subset of these questions will be graded.
+
+%\paragraph{Reading} 
+%Read the rest of chapters 9--11 in [BV2004]. 
+%%Read chapter 3.1, 3.2 and 3.3 in [BV2004].
+%%Students are \textbf{strongly advised} to skim appendices A and C in [BV2004] to look for unfamiliar material (and read in more detail if there is unfamiliar material)
+%
+%%\vspace{1em}
+%%\textbf{Special instructions this week}:
+%
+\end{instructions}
+
+
+
+
+\begin{enumerate}[align=left, leftmargin=*, label=\sffamily\bfseries Problem \arabic*:]   
+ 
+    \item \ [READING] Read section 1.1 ``Puzzle 1: Finding Missing Numbers'' from
+    \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.440.5344&rep=rep1&type=pdf}{``Data Streams: Algorithms and Applications''} by S.\ Muthukrishnan (Foundations and Trends® in Theoretical Computer Science, 2005).
+    
+    Read more if you are interested.
+    
+    For fun, here's a variant of the  \href{https://en.wikipedia.org/wiki/Hat_puzzle}{```hat puzzle,''} slightly related to the types of ideas Muthukrishnan things about. Suppose there are $100$ people, all in a line and facing the front of the line (so the person at the back can see everyone in front of them, the next person can see everyone except the person behind them, and the person in front can't see anyone).  Each person has a red or blue hat on, and they don't know what color their hat is. The game is as follows: starting with the person at the back of the line, each person in turn says either ``red'' or ``blue.'' The goal is to devise a strategy so that as many people as possible say the color that corresponds to their own hat (i.e., beat the 50\% success rate of random guessing). What's the best strategy?
+    
+    \textbf{Deliverable}: none required.
+    
+    
+    \item \ [CODING] Faster least squares.  Load the MNIST data we used previously, which gives a matrix $X$ which is $784\times  3000$. Make $5$ copies of this matrix (adding columns), then transpose it to get a new matrix (call it $A$ to follow our usual convention), which is now $M \times N$ with $M = 15000$ and $N=784$. Construct a random vector $x$ and compute $b=Ax+z$ where $z$ is a small amount of noise.  Compute the least squares estimator $x_\text{LS} = \argmin_{x}\, \|Ax-b\|_2$.
+    See code below:
+\begin{lstlisting}
+load MNIST_subsampled % loads X which is 784 x 3000
+A           = repmat( X, 1, 5 )';
+[M,N]       = size(A);
+xSignal     = randn(N,1);
+b           = A*xSignal + 1*randn(M,1);
+xLS	    = A\b; % least squares estimator
+\end{lstlisting}
+%        A   = gallery('condex',M); % in python, see https://github.com/macd/rogues
+    
+    For at least three types of sketches $S$ (Gaussian, count sketch, some type of fast Johnson-Lindenstrauss, Haar, sub-sampling, very sparse), solve the following sketched least-squares problem:
+    $$ \hat{x} = \argmin_{x} \, \| SAx - Sb\|_2
+    $$
+    
+    How accurate is $\hat{x}$ compared to $x_\text{LS}$? Is the sketched approach actually faster?
+    
+        \textbf{Deliverable}: investigate the accuracy and speed of sketched regression as a function of the number of rows $m$ in $S$. Make plots 
+        of error and time vs $m$, as in Fig.~\ref{fig:1}.  
+        
+        Bonus (not required): do your accuracy results change significantly if we change to a different matrix $A$? You might hypothesize that it would not affect the Gaussian sketch, but may affect other sketches. Is this true?
+        
+        Bonus (not required): try a leverage score sampling approach. You'll first need to look into the approximate SVD.
+    
+    
+    
+\begin{figure}
+    \centering
+    \includegraphics[width=2in]{Figs/HW6_accuracy.png}
+    \includegraphics[width=2in]{Figs/HW6_time.png}
+\caption{Examples for the type of output we want on problem 2.}
+% Made figures with: https://www.mathworks.com/matlabcentral/fileexchange/38499-xkcdify
+% and then updated the font.
+% Font from: https://github.com/ipython/xkcd-font/blob/master/xkcd-script/font/xkcd-script.ttf
+\label{fig:1}
+\end{figure}
+    
+        \emph{Hint:} 
+        Matlab users, you can use \texttt{sketch.m} from the Github repository \\ \href{https://github.com/stephenbeckr/randomized-algorithm-class/blob/master/Code/}{github.com/stephenbeckr/randomized-algorithm-class/blob/master/Code/}
+        (and if someone wants to make a python or Julia version, we can host that too).
+
+\end{enumerate}   
+\end{document}
