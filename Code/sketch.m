@@ -16,11 +16,14 @@ function [fcn,S] = sketch( m, M, typeOfSketch, performTest, varargin )
 % sketch( ..., performTest )
 %   if performTest = true, then this checks that the sketch
 %   really has the property E[ S'S ] = I_M
+%   errorHistory = sketch( ..., performTest )
+%       will return the full history of the errrors
 %
 % sketch( ..., parameterName, parameterValue, ... )
 %   allows optional parameter, such as:
 %       'sparsity' (for sparse sketches)
 %       'weights'  (for subsample, if you want it non-uniform)
+%       'nReps'    (for how many repetitions to use when testing)
 %
 % Stephen Becker, Feb 2019
 
@@ -33,23 +36,31 @@ end
 prs = inputParser;
 addParameter(prs,'sparsity',.01);
 addParameter(prs,'weights',[]);
+addParameter(prs,'nReps',100);
 parse(prs,varargin{:});
 sparsity     = prs.Results.sparsity;
 weights      = prs.Results.weights;
+nReps        = prs.Results.nReps;
 
 if performTest
-    nReps   = 100;
     sumS    = zeros(M);
+    if nargout > 0
+        errHist     = zeros(nReps,1);
+    end
     fprintf('\nRunning test to see of E[S''S] = I (for sketch of type %s)\n', typeOfSketch);
+    printEvery  = round( nReps / 10 );
     for rep = 1:nReps
         % Call this own function recursively
         [~,S]   = sketch( m, M, typeOfSketch );
         sumS    = sumS + S'*S;
-        if ~mod(rep,10)
+        if nargout > 0
+            errHist(rep) = norm( sumS/rep - eye(M), 'fro' )/M;
+        end
+        if ~mod(rep,printEvery)
             err = norm( sumS/rep - eye(M), 'fro' )/M;
             fprintf('%3d trials, error || sampleMean(S''S)-I ||_F is %4.1e', ...
                 rep, err );
-            if rep > 10
+            if rep > printEvery
                 fprintf(', %.2f change', err/errOld);
             end
             fprintf('\n');
@@ -60,6 +71,9 @@ if performTest
     fprintf('The first 5 x 5 block of sampleMean is: \n');
     disp( sumS(1:5,1:5) );
     fprintf('Average diagonal entry is %.3f, should be 1\n', mean(diag(sumS)) );
+    if nargout > 0
+        fcn     = errHist;
+    end
     return;
 end
 
@@ -96,7 +110,7 @@ switch lower(typeOfSketch)
         D       = spdiags(d,0,M,M); % bsxfun() is another efficient way to do this
         ind     = randperm( M, m );
         subsample   = @(X) X(ind,:);
-        fcn     = @(A) sqrt(M/m)*subsample( dct( D*A ) );
+        fcn     = @(A) sqrt(M/m)*subsample( dct( D*A ) ); % FIXME
         
     case {'fljt_hadamard','hadamard'} % Hadamard version of FJLT
         M2  = 2^nextpow2(M);
