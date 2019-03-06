@@ -9,3 +9,4 @@ At some point I thought I had a distinction between "vignettes" and "demos" but 
 - Demo 5: speed/timing results for various Fast Johnson-Lindenstrauss Transforms
 - Demo 6: statistical leverage scores applied to least-squares regressoin
 - Vignette 7: random matrix mulitplication via sub-sampling, following Drineas/Mahoney summer school notes
+- Demo 8: high accuracy l2 regression via either iterative Hessian sketch or preconditioning (BLENDENPIK/LSRN)
