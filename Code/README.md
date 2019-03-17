@@ -1,6 +1,11 @@
 # Code useful for the randomized algorithm class
 
+## Hadamard Transform
 [Hadamard Transform Code](https://github.com/jeffeverett/hadamard-transform) written by Stephen Becker and Jeff Everett, much faster than Matlab's code. You can also use this [Hadamard_teaching_code.m](Hadamard_teaching_code.m) simple .m file, which is actually faster than Matlab's code sometimes, and it's much simpler, so you can get a better idea of how the fast Hadamard transform works
+
+## CountSketch
+
+For a python version, see [scipy.linalg.clarkson_woodruff_transform](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.clarkson_woodruff_transform.html#scipy.linalg.clarkson_woodruff_transform). I haven't used it myself so not sure how efficient it is.
 
 [CountSketch.c](countSketch.c) is an implementation of CountSketch in Matlab's mex interface. You'll need to compile it. See the source code for some fancy compilation options, but a basic version is:
 ```

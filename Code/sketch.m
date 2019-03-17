@@ -48,6 +48,7 @@ if performTest
         errHist     = zeros(nReps,1);
     end
     fprintf('\nRunning test to see of E[S''S] = I (for sketch of type %s)\n', typeOfSketch);
+    warning('off','sketch:buildMatrix') 
     printEvery  = round( nReps / 10 );
     for rep = 1:nReps
         % Call this own function recursively
@@ -74,6 +75,7 @@ if performTest
     if nargout > 0
         fcn     = errHist;
     end
+    warning('on','sketch:buildMatrix') 
     return;
 end
 
@@ -102,6 +104,9 @@ switch lower(typeOfSketch)
         elseif exist( 'countSketch', 'file' ) 
             fcn     = @(A) countSketch(A'*D,indx_map,m,useTranspose)';
         else
+            msg = 'Using slow countSketch, please compile countSketch.c';
+            msg = [msg,'\n To turn this warning off, call warning(''off'',''sketch:slowCount'')'];
+            warning('sketch:slowCount',msg);
             fcn     = @(A) slowCountSketch( D*A, double(indx_map) );
         end
 
@@ -161,6 +166,9 @@ switch lower(typeOfSketch)
 end
 
 if isempty(S) && nargout >= 2
+    msg='You have requested the explicit sketch matrix which is slow!';
+    msg=[msg,'\n To turn this warning off, call warning(''off'',''sketch:buildMatrix'')'];
+    warning('sketch:buildMatrix',msg);
     S   = fcn(eye(M));
 end
 
