@@ -1,0 +1,274 @@
+\RequirePackage[l2tabu, orthodox]{nag}	% tells out-of-date packages
+\documentclass[10pt, letterpaper]{scrartcl}
+
+\usepackage{amssymb,amsfonts}
+\usepackage{amsthm} % if using theorems and proofs
+\usepackage[cmex10]{amsmath}
+\usepackage[usenames,dvipsnames,svgnames]{xcolor} % use like \textcolor{red}{..} or {\color{red} ...}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}% can also add 'nohead', or leave blank
+
+%\usepackage{url}
+
+\usepackage{cancel} % for canceling terms
+
+\usepackage{booktabs}
+
+\usepackage{pdfpages} % for including pdfs
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}  %algorithmicx
+%\usepackage{wrapfig}
+
+%\usepackage{listings}
+\usepackage[numbered,framed]{matlab-prettifier}
+\lstdefinestyle{mat}{
+    frame=single,
+    language=matlab,
+    showstringspaces=false,
+    %  keywordstyle=\bfseries\color{blue},
+    %  commentstyle=\color{green},
+    %  stringstyle=\color{magenta},
+}
+\lstset{
+    style              = Matlab-editor,
+    basicstyle         = \mlttfamily,
+    escapechar         = ",
+    mlshowsectionrules = true,
+}
+%% use withL: \lstinputlisting{myODEfunction.m}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % important!
+
+\usepackage{hyperref}
+\hypersetup{pdfauthor={Stephen Becker},
+    pdftitle={},
+    colorlinks=true,
+    citecolor=MidnightBlue,
+    urlcolor=Bittersweet,
+}
+% -- Input macros and such --
+\IfFileExists{custom_headers.tex}{
+\input{custom_headers}}{
+\input{../custom_headers}}{
+}
+\let\oldenumerate\enumerate
+\renewcommand{\enumerate}{
+  \oldenumerate
+  \setlength{\itemsep}{1em}
+  \setlength{\parskip}{1em}
+  \setlength{\parsep}{0pt}
+}
+\usepackage{enumitem}
+%\setlist{noitemsep}
+% See http://mirrors.fe.up.pt/pub/CTAN/macros/latex/contrib/enumitem/enumitem.pdf
+% and now, set par indent to zero
+\newlength{\savedparindent}
+\setlength{\savedparindent}{\parindent}
+\setlist[enumerate]{listparindent=\savedparindent}
+%\setlength{\parindent}{0pt} % Jan 2017, HW 3/4, comment this out.
+
+\usepackage{xspace}
+%\newcommand{\collaboration}{\textbf{Collaboration Allowed}\xspace}
+%\newcommand{\nocollaboration}{\textbf{No Collaboration}\xspace}
+
+\renewcommand{\T}{\mathbb{T}}
+\newcommand{\fn}{\widehat{f}_n} % Fourier coefficients
+\newcommand{\spi}{\frac{1}{\sqrt{2\pi}}}
+\renewcommand{\H}{\mathcal{H}}
+\renewcommand{\phi}{\varphi}
+\DeclareMathOperator{\ran}{ran} % ker already defined, and with lower case
+
+\newcommand*\Laplace{\mathop{}\!\mathbin\bigtriangleup}
+\renewcommand{\SS}{\mathcal{S}} % Schwartz space
+
+% My solution environment
+%%\newenvironment{solution}{\setlength{\parindent}{\savedparindent}{\bfseries Solution}:}{}
+\makeatletter
+\newcommand\solParagraph{\@startsection{paragraph}{4}{\z@}%
+%    {-3.25ex \@plus -1ex \@minus -0.2ex}%
+    {-.55ex \@plus -1ex \@minus -0.2ex}%
+    {0.01pt}%
+    {\raggedsection\normalfont\sectfont\nobreak\size@paragraph}%
+}
+\makeatother
+\newenvironment{solution}{\setlength{\parindent}{\savedparindent}\solParagraph{Solution:}}{}
+
+%\newenvironment{solution}{\emph{Solution}:}{}
+\newenvironment{instructions}{}{}
+\newenvironment{SolnComment}{}{}
+\usepackage{comment} 
+
+%\def\solutions{1}  % define solutions  % !!! COMMENT or UNCOMMENT THIS LINE
+
+% NOTE: \begin{solution} should have NO SPACES BEFORE OR AFTER IT,
+% 	Can give very weird errors, hiding text, etc. See http://tex.stackexchange.com/a/91431/4603
+\ifdefined\solutions
+    \newcommand{\solTitle}[1]{#1}
+    \excludecomment{instructions}
+\else
+   \excludecomment{solution}% uncomment this line to hide solution
+   \newcommand{\solTitle}[1]{}
+   \excludecomment{SolnComment}
+\fi
+
+
+\title{Homework 10 \solTitle{Selected Solutions} \\APPM 4720/5720 Spring 2019 \\ Randomized Algorithms}
+%\author{Stephen Becker}
+\date{}
+\begin{document}
+\maketitle
+\vspace{-6em}
+\textbf{Due date}: Monday, April 1 2019 by 5 PM. I suggest you aim for Fri March 22 in order to exploit office hours.
+%Friday, Mar 22 2019
+
+Theme: Randomized SVD   \hfill Instructor: Stephen Becker %Dr.\ Becker
+%\vspace{1em}
+
+\begin{instructions}
+\paragraph{Instructions}
+Collaboration with your fellow students is allowed and in fact recommended, although direct copying is not allowed.  Please write down the names of the students that you worked with. The internet is allowed for basic tasks only, not for directly looking for solutions.
+
+An arbitrary subset of these questions will be graded.
+
+\end{instructions}
+
+
+\vspace{2em}
+Please refer to ``Finding structure with randomness: Stochastic algorithms for constructing approximate matrix decompositions'' (Halko, Martinsson, Tropp; SIAM Review 2011; we'll refer to this paper as ``HMT''), and also Algo 3 of ``Single-pass PCA of large high-dimensional data'' (Yu, Gu, Li, Liu, Li; IJCAI 2017, \href{https://arxiv.org/abs/1704.07669}{arXiv link})
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Procedure{randomized SVD}{$A,k,p,q$} \Comment{$A$ is $M\times N$, $k$ is target rank, $p$ oversampling, $q\ge 0$ pwr iter} 
+        \State Draw $N \times \ell$ matrix $\Omega$, iid Normal entries ($\ell = k+p$)
+        \State $Y = A\Omega$
+        \State $QR=Y$ \Comment{Thin \texttt{QR} factorization}
+        \For{$i=1,\ldots,q$} \Comment{Optional: power iterations for increased accuracy}
+        \State $B=A^T Q$
+        \State $QR = B$, $B \gets Q$
+        \State $Y = AB$
+        \State $QR=Y$
+        \EndFor
+        \State $B=A^TQ$ \Comment{So $A \approx QQ^TA = QB^T$}
+        \State $\widetilde{U}\Sigma V^T = B^T$ \Comment{Thin \texttt{svd}}
+        \State Keep first $k$ columns of $\widetilde{U}$ and $V$, first $k$ cols and rows of $\Sigma$
+        \State $U = Q\widetilde{U}$
+        \State \Return $\{U,\Sigma,V\}$ and/or $\widetilde{A} \defeq U\Sigma V^T$
+        \EndProcedure
+    \end{algorithmic}
+\caption{Basic 2-pass randomized SVD of HMT, i.e., Algo 4.1 + Algo 5.1}\label{algo:1}
+\end{algorithm}
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Procedure{one-pass randomized SVD}{$A,k,p$} \Comment{$A$ is $M\times N$, $k$ is target rank, $p$ oversampling} 
+        \State Draw $N \times \ell$ matrix $\Omega$, iid Normal entries ($\ell = k+p$)
+        \State Draw $M \times \ell$ matrix $\widetilde{\Omega}$, iid Normal entries
+        \State Multiply $Y = A\Omega$ and $\widetilde{Y}=A^T\widetilde{\Omega}$ \Comment{In 1-pass over data}
+        \State $QR=Y$ and $\widetilde{Q}\widetilde{R}=\widetilde{Y}$ \Comment{Thin \texttt{QR} factorization}
+        \State $B = \argmin_{B\in\R^{\ell\times \ell}}\, \| Q^TY - B (\widetilde{Q}^T\Omega)\|_F^2 + \|(\widetilde{Q}^T\widetilde{Y})^T - (Q^T\widetilde{\Omega})^T B\|_F^2$ \Comment{Use \texttt{LSQR}}
+        \State $\widetilde{U}\Sigma \widetilde{V}^T = B$ \Comment{Thin \texttt{svd}}
+        \State Keep first $k$ columns of $\widetilde{U}$ and $\widetilde{V}$, first $k$ cols and rows of $\Sigma$
+        \State $U = Q\widetilde{U}$, $V = \widetilde{Q}\widetilde{V}$
+        \State \Return $\{U,\Sigma,V\}$ and/or $\widetilde{A} \defeq U\Sigma V^T$
+        \EndProcedure
+    \end{algorithmic}
+    \caption{1-pass randomized SVD of HMT section 5.5} \label{algo:2}
+\end{algorithm}
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Procedure{Better one-pass randomized SVD}{$A,k,p$} \Comment{$A$ is $M\times N$, $k$ is target rank, $p$ oversampling} 
+        \State Draw $N \times \ell$ matrix $\Omega$, iid Normal entries ($\ell = k+p$)
+        \State Multiply $Y=A\Omega$ and $B = A^TY$ \Comment{In 1-pass over data}
+        \State $QR=Y$ and $\widetilde{Q}\widetilde{R}=\widetilde{Y}$ \Comment{Thin \texttt{QR} factorization}
+        \State $B \gets BR^{-1}$ \Comment{so $B=A^TQ$; this step must be modified if $R$ is rank deficient!}
+        \State $\widetilde{U}\Sigma V^T = B^T$ \Comment{Thin \texttt{svd}}
+        \State Keep first $k$ columns of $\widetilde{U}$ and $V$, first $k$ cols and rows of $\Sigma$
+        \State $U = Q\widetilde{U}$
+        \State \Return $\{U,\Sigma,V\}$ and/or $\widetilde{A} \defeq U\Sigma V^T$
+        \EndProcedure
+    \end{algorithmic}
+    \caption{1-pass randomized SVD of Yu et al.\ '17} \label{algo:3}
+\end{algorithm}
+
+
+
+\begin{enumerate}[align=left, leftmargin=*, label=\sffamily\bfseries Problem \arabic*:]   
+ 
+    \item \ [CODING] Compare the performance of 
+    \begin{enumerate}[noitemsep]
+\item the randomized SVD (fix the oversampling parameter, e.g., $p=10$, 
+\item the randomized SVD with a few power iterations, and 
+\item the Lanczos method (\texttt{svds} in Matlab, or \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.svds.html}{scipy.sparse.linalg.svds} in Python).
+    \end{enumerate}
+    
+    Compare the algorithms on the following two matrices (one dense, the other sparse). In Python, you don't have to do exactly this, but make similar matrices.
+    
+    Matrix 1:
+\begin{lstlisting}
+M   = 1e3; N   = 2*M;
+A   = 1/sqrt(M*N)*randn(M,N)*diag(logspace(0,-5,N))*randn(N,N);
+\end{lstlisting}
+
+    Matrix 2:
+\begin{lstlisting}
+M   = 2e3; N   = 2*M;
+A   = sprandn(M,N,0.05);
+\end{lstlisting}
+    
+    \textbf{Deliverable}: Plot the errors in spectral and Frobenius norm, and the timing, for the 3 methods as well as for a direct dense SVD (\texttt{svd} in Matlab, \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.svd.html}{numpy.linalg.svd} in Python), for both matrices.  Overall, that is 6 plots (2 errors + timing $\times$ 2 matrices).
+    
+    \emph{Hints}: computing the spectral norm of the error can be the most time-consuming part of your code, so you can estimate this using power iterations. Matlab does it for you if you have a sparse matrix (\texttt{normest}) but we really need it for a sparse matrix minus a low-rank matrix. I've adapted \texttt{normest} to do this and put it on Github, called \texttt{my\_normest.m}, and you can similarly adapt one for Python.
+    
+    In Matlab, to export figures, I recommend \href{https://www.mathworks.com/matlabcentral/fileexchange/23629-export_fig}{export\_fig}. Make sure your graphs are readable if you print them in black and white!
+
+    \item \ [CODING] Compare the two versions of one-pass SVD algorithms, Algorithms \ref{algo:2} and \ref{algo:3} (also include the two-pass Algorithm \ref{algo:1} as a benchmark). Do this on a similar matrix to problem 1, but one that has faster decaying singular values:
+    
+\begin{lstlisting}
+M   = 1e3; N   = 2*M;
+A   = 1/sqrt(M*N)*randn(M,N)*diag(logspace(0,-5,N).^4)*randn(N,N);
+\end{lstlisting}
+
+    \textbf{Deliverable}: for $k=150$, what is the Frobenius norm error for all 3 randomized SVD algorithms? Comment on the accuracy of the different algorithms. You can choose how much oversampling $p$ to use.
+    
+    \emph{Hint}: for Algorithm~\ref{algo:2}, you find $B$ as the solution to a least-squares problem. However, it's not a typical least-squares problem because it is a matrix variable. It is equivalent to  a standard least-squares problem in the variable $b = \text{vec}(B) \defeq B(:)$ [Matlab notation], with a linear operator 
+    $$ \widetilde{\mathcal{A}}(b) = 
+    \mathcal{A}(B=\text{mat}(b)) = \begin{bmatrix} \text{vec}(  B D ) \\
+    \text{vec}( F B ) \end{bmatrix},
+    \quad
+    D \defeq \widetilde{Q}^T\Omega, \quad
+    F \defeq (Q^T\widetilde{\Omega})^T
+    $$ 
+    and right-hand-side $\begin{bmatrix}\text{vec}(Q^TY) \\ \text{vec}( (\widetilde{Q}^T\widetilde{Y})^T )\end{bmatrix}$.  Here, $\text{mat}(b)$ reshapes $b$ into an $\ell \times \ell$ matrix, in whatever order in needs to be consistent with $\text{vec}$ so that $\text{mat}\circ\text{vec} $ is the $\ell^2 \times \ell^2$ identity matrix.
+    
+    You definitely want to use an iterative method, because making $\mathcal{A}$ explicit is a large matrix and it would be inefficient to apply ($\mathcal{O}(\ell^4)$ flops, compared to $\mathcal{O}(\ell^3)$ flops if you do it as above).  In matlab, use \texttt{lsqr}, and in python use \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.lsqr.html}{scipy.sparse.linalg.lsqr}. For python, the routine will expect you to pass in a \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.LinearOperator.html#scipy.sparse.linalg.LinearOperator}{LinearOperator} object. 
+    
+    For an iterative method, you need to know the transpose/adjoint of $\widetilde{\mathcal{A}}$. Use the fact that the order of composition of linear operators flips when you do the transpose, and that mat and vec are transposes of each other, and the transpose of $B \mapsto BD$ is $ Z \mapsto ZD^T$, etc. If you're confused about this part, please come to office hours!
+    
+%    \| Q^TY - B (\widetilde{Q}^T\Omega)\|_F^2 + \|(\widetilde{Q}^T\widetilde{Y})^T - (Q^T\widetilde{\Omega})^T B\|_F^2
+    
+    Note that  Algorithm~\ref{algo:3} will fail if you apply it to a matrix that has true rank less than $\ell$. You can make the algorithm robust by computing the SVD of $B$, determining what the effective rank is, then removing columns of $Y$ and $B$. You do \emph{not need to implement this}!.
+    
+
+    
+    
+   \item \ [CODING] Run Algorithm~\ref{algo:3} on the 73 GB file \texttt{/rc\_scratch/stbe1590/hugeSquareMatrix.mat} (on the research computing cluster; refer to HW 3 and HW 4)   
+   which contains a $10^5 \times 10^5$ matrix, for $k=150$.  You may want to check your algorithm using the smaller matrix \\
+   \texttt{/rc\_scratch/stbe1590/largeSquareMatrix.mat} which is only 752 MB and contains a $10^4 \times 10^4$ matrix.
+   
+   \textbf{Deliverable}: return a plot of the estimated top 150 singular values (note that it is not easy to report the error, as this requires either a second pass through the data, or a randomized estimate), and also report the time it took to read in the data and the time it took to do the computation.
+    
+%\begin{lstlisting}
+%\end{lstlisting}
+    
+        \emph{Hint}: to compute something like $Y=A\Omega$ and $B = A^TY$ in 1-pass over the data, assuming the entire data matrix $A$ is too large to store in memory, load $A$ by rows and for simplicity, assume we can split $A$ into 2 blocks of rows, each of which fits into memory (and it will soon be clear how to generalize to more than 2 blocks), eg., $A = \begin{bmatrix} A_1\\A_2\end{bmatrix}$, and similarly,
+    $ Y = \begin{bmatrix} Y_1\\Y_2\end{bmatrix} = \begin{bmatrix} A_1\Omega\\A_2\Omega\end{bmatrix}$.
+    Then $B = A^TY = \begin{bmatrix} A_1^T&A_2^T\end{bmatrix} \cdot \begin{bmatrix} Y_1\\Y_2\end{bmatrix}
+    = A_1^TY_1 + A_2^TY_2$. Thus the idea is as follows: load $A_1$ into memory, compute $Y_1 = A_1\Omega$, then compute $B = A_1^T Y_1$. Now throw away $A_1$ and load $A_2$ into memory, compute $Y_2 = A_2\Omega$, and then update $B \gets B + A_2^T Y_2$.
+
+\end{enumerate}   
+\end{document}

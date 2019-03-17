@@ -70,7 +70,7 @@ SA  = sqrt(M/m)*SA(ind,:);
 %% Cauchy sketch
 % Same as student-t with 1 degree of freedom
 S   = trnd(1,m,M);
-SA  = 1/sqrt(m)*S*A;
+SA  = 1/m*S*A;
 %% Check if we've preserved l1 and l2 norms
 nrms2    = sqrt( sum(SA.^2,1) );
 nrms1    = sum(  abs(SA),1);

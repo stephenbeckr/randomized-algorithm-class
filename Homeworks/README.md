@@ -9,3 +9,4 @@
 - [HW 7](APPM47205720Spr19_RandomizedAlgos_Homework07.pdf) is due Friday Mar 1 2019
 - [HW 8](APPM47205720Spr19_RandomizedAlgos_Homework08.pdf) is due Friday Mar 8 2019
 - [HW 9](APPM47205720Spr19_RandomizedAlgos_Homework09.pdf) is due Friday Mar 15 2019
+- [HW 10](APPM47205720Spr19_RandomizedAlgos_Homework10.pdf) is due Monday April 1 2019
