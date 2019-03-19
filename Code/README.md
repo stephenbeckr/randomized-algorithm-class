@@ -1,5 +1,11 @@
 # Code useful for the randomized algorithm class
 
+## Misc utilities
+
+- [my_normest](my_normest.m) for estimating the spectral norm in Matlab (variant of Matlab's normest that allows for function handles)
+- [power_method](power_method.py) for estimating the spectral norm in Python
+- [pdist2_faster](pdist2_faster.m) for calculating all pairwise distances, similar to Matlabs pdist2 but faster often (this version uses simple matrix multiplies)
+
 ## Hadamard Transform
 [Hadamard Transform Code](https://github.com/jeffeverett/hadamard-transform) written by Stephen Becker and Jeff Everett, much faster than Matlab's code. You can also use this [Hadamard_teaching_code.m](Hadamard_teaching_code.m) simple .m file, which is actually faster than Matlab's code sometimes, and it's much simpler, so you can get a better idea of how the fast Hadamard transform works
 
