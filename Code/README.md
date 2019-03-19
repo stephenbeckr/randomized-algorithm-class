@@ -1,5 +1,8 @@
 # Code useful for the randomized algorithm class
 
+## Sketching code
+- [sketch](sketch.m) is a multipurpose code that can call a variety of sketches, and give you a function handle (and a matrix, if requested), and it also has a self-test mode to check if E[S^TS] = I (where S is the sketch), which is useful for spotting mistakes in scaling. This code relies on other functions inside this directory for the actual sketching. For count sketch and hadamard transforms, make sure to compile the C code with the mex compiler, otherwise you'll have slow performance.
+
 ## Misc utilities
 
 - [my_normest](my_normest.m) for estimating the spectral norm in Matlab (variant of Matlab's normest that allows for function handles)
