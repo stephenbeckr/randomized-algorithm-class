@@ -222,7 +222,8 @@ A   = sprandn(M,N,0.05);
     
     \textbf{Deliverable}: Plot the errors in spectral and Frobenius norm, and the timing, for the 3 methods as well as for a direct dense SVD (\texttt{svd} in Matlab, \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.svd.html}{numpy.linalg.svd} in Python), for both matrices.  Overall, that is 6 plots (2 errors + timing $\times$ 2 matrices).
     
-    \emph{Hints}: computing the spectral norm of the error can be the most time-consuming part of your code, so you can estimate this using power iterations. Matlab does it for you if you have a sparse matrix (\texttt{normest}) but we really need it for a sparse matrix minus a low-rank matrix. I've adapted \texttt{normest} to do this and put it on Github, called \texttt{my\_normest.m}, and you can similarly adapt one for Python.
+    \emph{Hints}: computing the spectral norm of the error can be the most time-consuming part of your code, so you can estimate this using power iterations. Matlab does it for you if you have a sparse matrix (\texttt{normest}) but we really need it for a sparse matrix minus a low-rank matrix. I've adapted \texttt{normest} to do this and put it on Github, called \texttt{my\_normest.m}, and there's also a similar version we made in Python called \texttt{power\_method.py} (thanks to Will Shand).
+    
     
     In Matlab, to export figures, I recommend \href{https://www.mathworks.com/matlabcentral/fileexchange/23629-export_fig}{export\_fig}. Make sure your graphs are readable if you print them in black and white!
 
