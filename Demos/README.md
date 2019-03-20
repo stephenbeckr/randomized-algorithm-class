@@ -11,4 +11,5 @@ At some point I thought I had a distinction between "vignettes" and "demos" but 
 - Vignette 7: random matrix mulitplication via sub-sampling, following Drineas/Mahoney summer school notes
 - Demo 8: high accuracy l2 regression via either iterative Hessian sketch or preconditioning (BLENDENPIK/LSRN)
 - Demo 9: Randomized Kacmarz for solving consistent over-determined systems of equations
-- Dem 10: l1 regression and p-stable distributions (for p=1,2, i.e., Cauchy and Gaussian)
+- Demo 10: l1 regression and p-stable distributions (for p=1,2, i.e., Cauchy and Gaussian)
+- Demo 11: James-Stein estimator
