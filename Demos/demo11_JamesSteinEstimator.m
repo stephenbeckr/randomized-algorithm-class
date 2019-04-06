@@ -19,7 +19,7 @@ sigma   = .3;
 nReps   = 1e3;
 
 mu      = zeros(p,1);
-v       = .2*ones(p,1); % arbitrary fixed vector
+v       = .5*ones(p,1); % arbitrary fixed vector
 % v       = .1*randn(p,1);
 
 sampleMeans     = zeros(p,2);
