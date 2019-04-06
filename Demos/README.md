@@ -13,3 +13,5 @@ At some point I thought I had a distinction between "vignettes" and "demos" but 
 - Demo 9: Randomized Kacmarz for solving consistent over-determined systems of equations
 - Demo 10: l1 regression and p-stable distributions (for p=1,2, i.e., Cauchy and Gaussian)
 - Demo 11: James-Stein estimator
+- Demo 12: Basic noiseless Compressed Sensing demo
+- Demo 13: Euclidean Distance Matrix (EDM) completion example, using nuclear norm minimization
