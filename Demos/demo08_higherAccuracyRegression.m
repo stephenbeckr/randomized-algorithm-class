@@ -10,6 +10,16 @@ where
   A is M x N
 and we are assuming M >> N.
 
+Code: Stephen Becker
+
+References:
+
+- "Iterative Hessian Sketch: Fast and Accurate Solution
+Approximation for Constrained Least-Squares" (Pilanci, Wainwright; JMLR 2016
+http://www.jmlr.org/papers/volume17/14-460/14-460.pdf )
+- "Blendenpik: Supercharging LAPACK's Least-Squares Solver" (Avron et al. 2010, https://epubs.siam.org/doi/abs/10.1137/090767911); 
+- "LSRN: A Parallel Iterative Solver for Strongly Over- or Underdetermined Systems" (Meng et al. 2014, https://epubs.siam.org/doi/abs/10.1137/120866580 )
+
 %}
 
 addpath ~/Repos/randomized-algorithm-class/Code/
@@ -126,7 +136,7 @@ k2=cond( A/R );  % and this thing we *hope* is small
 fprintf('QR on SA took %.2f sec, cond(SA*inv(R)) is %.2f, cond(A*inv(R)) is %.2f\n\n',...
     time_QR,k1,k2);
 %% For reference, use LSQR to solve, without preconditioning
-fprintf('== LSRN, for reference, with 100 iterations ==\n');
+fprintf('== LSQR, for reference, with 100 iterations ==\n');
 tol     = 1e-8;
 maxit   = 1e2;
 tic
@@ -139,7 +149,7 @@ fprintf('Took %.2f sec for LSQR, err metrics %.2e and %.2e and %.2e\n\n', ...
     time_LSQR, err1,err2,err3);
 
 
-fprintf('== LSRN, for reference, with 500 iterations ==\n');
+fprintf('== LSQR, for reference, with 500 iterations ==\n');
 tol     = 1e-8;
 maxit   = 5e2;
 tic
