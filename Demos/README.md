@@ -16,3 +16,4 @@ At some point I thought I had a distinction between "vignettes" and "demos" but 
 - Demo 12: Basic noiseless Compressed Sensing demo
 - Demo 13: Euclidean Distance Matrix (EDM) completion example, using nuclear norm minimization
 - Demo 14: Monte Carlo integration and improvements (quasi-Monte Carlo, control variates), and comparison with quadrature
+- Demo 15: Stochastic Gradient Descent (SGD) and improvements (SAGA, SVRG, Mini-batches, iterate averaging)
