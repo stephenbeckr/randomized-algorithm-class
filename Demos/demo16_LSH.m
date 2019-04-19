@@ -36,9 +36,12 @@ for i = 1:3
         Engine = java.security.MessageDigest.getInstance('SHA');
         Engine.update(typecast(uint16(ss), 'uint8'));
         hash    = Engine.digest; % 8 bits per (so 1 byte); keep a few of these
-        hash    = typecast( hash(1:2), 'uint8' ); % and remove signs
-        h       = dec2bin( hash );
-        h       = uint16( bin2dec( h(:)' ) ); % we kept 2 bytes, so 16 bit
+        hash    = uint16(typecast( hash(1:2), 'uint8' )); % and remove signs
+%         h       = dec2bin( hash );
+%         h       = uint16( bin2dec( h(:)' ) ); % we kept 2 bytes, so 16 bit
+        % (Above line is slow, and it merges binary vectors in a funny way.
+        % Better is this line below:)
+        h       = 2^8*hash(1) + hash(2) + 1; % make it 1-based; be careful to make sure everything is uint16 not uint8 or you have overflow!
         vec     = [vec,h]; % append
         % sprintf('%.2x',double(typecast(hash, 'uint8'))) 
     end
@@ -54,8 +57,8 @@ disp( JaccardSim( sentence{2}, sentence{3} ) )
 %% Apply minhash (many of them), naive version
 % Need a universe of all possible entries
 % Either take union(...) or use max of uint...
-% L   = 10; % Number of hashes to draw (L=20 to visualize)
-L   = 1e3; % To check
+L   = 10; % Number of hashes to draw (L=20 to visualize)
+% L   = 1e3; % To check
 MinHashSignatures = zeros(3,L);
 for ell = 1:L
     P = randperm( intmax('uint16') ); % random permutation of 1, ..., 65k
@@ -98,9 +101,10 @@ for bi = 1:b
         Engine = java.security.MessageDigest.getInstance('SHA');
         Engine.update(typecast(uint16(temp(i,:)), 'uint8'));
         hash    = Engine.digest;
-        hash    = typecast( hash(1:2), 'uint8' ); % remove signs
-        h       = dec2bin( hash );
-        h       = uint16( bin2dec( h(:)' ) );
+        hash    = uint16(typecast( hash(1:2), 'uint8' )); % remove signs
+%         h       = dec2bin( hash );
+%         h       = uint16( bin2dec( h(:)' ) );
+        h       = 2^8*hash(1) + hash(2) + 1; % make it 1-based
         MinHashSignatures(i,bi) = h;
     end
 end
@@ -143,9 +147,10 @@ for bi = 1:b
         Engine = java.security.MessageDigest.getInstance('SHA');
         Engine.update(typecast(uint16(temp(i,:)), 'uint8'));
         hash    = Engine.digest;
-        hash    = typecast( hash(1:2), 'uint8' ); % remove signs
-        h       = dec2bin( hash );
-        h       = uint16( bin2dec( h(:)' ) );
+        hash    = uint16(typecast( hash(1:2), 'uint8' )); % remove signs
+%         h       = dec2bin( hash );
+%         h       = uint16( bin2dec( h(:)' ) );
+        h       = 2^8*hash(1) + hash(2) + 1; % make it 1-based
         Signatures(i,bi) = h;
     end
 end

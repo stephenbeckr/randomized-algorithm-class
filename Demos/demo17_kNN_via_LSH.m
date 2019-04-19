@@ -26,7 +26,7 @@ percentCorrect = @(labels1,labels2) length(find(labels1(:)==labels2(:)))/length(
 rng(1);
 % Try with various sizes to get an idea how it scales...
 % test_subset     = randsample( 1e4, 1e3  );
-test_subset     = randsample( 1e4, 1e2  );
+test_subset     = randsample( 1e4, 16e2  );
 
 TestPoints      = Test(test_subset,:);
 TestLabels      = Test_labels( test_subset );
