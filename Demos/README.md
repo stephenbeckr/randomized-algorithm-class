@@ -19,3 +19,6 @@ At some point I thought I had a distinction between "vignettes" and "demos" but 
 - Demo 15: Stochastic Gradient Descent (SGD) and improvements (SAGA, SVRG, Mini-batches, iterate averaging)
 - Demo 16: Locality Sensitive Hashing (LSH): MinHash, SimHash, Euclidean distance hash
 - Demo 17: LSH applied to k-Nearest-Neighbors (kNN)
+- Demo 18: CountMin sketch to efficiently find frequencies of data names (data from Soc Security administration)
+- Demo 19: AMS sketch vs Count sketch (median vs mean postprocessing)
+- Demo 20: Core sets for Kmeans using Kmeans++ as coarse approximation
