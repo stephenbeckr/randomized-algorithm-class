@@ -8,6 +8,7 @@ The actual topics we covered, and links to references, are on this [google sheet
 This git repo contains things like code demos used in class. Most of the code is in Matlab; if any students want to translate demos to other languages and then push them, just make a pull request
 - [Demos](Demos/)
 - [Homeworks](Homeworks/) (homework solutions and code are on the private Canvas website)
+- [Class policies, etc.](APPM4720_5720_Spr2019_Syllabus.pdf)
 
 
 # Syllabus
@@ -74,3 +75,20 @@ This git repo contains things like code demos used in class. Most of the code is
 Guest lectures:
 - Richard Border about [Stochastic Lanczos quadrature, Border and Becker '19](https://www.biorxiv.org/content/10.1101/607168v1)
 - Osman Malik about tensor sketches and interpolative decomposition: [Malik and Becker 2018 NeurIPS](https://papers.nips.cc/paper/8213-low-rank-tucker-decomposition-of-large-tensors-using-tensorsketch) and [Malik and Becker 2019 ID](https://arxiv.org/abs/1901.10559)
+
+# Resources (since there is no main textbook)
+Here is a list of monographs that are helpful:
+
+- Gunnar Martinsson previously taught a version of this course, and still has information on the course website [Fast algorithms for big data from spring 2016](https://amath.colorado.edu/faculty/martinss/Teaching/APPM5720_2016s/index.html).
+- Gunnar Martinsson also has a 34 page monograph [Randomized methods for matrix computation (started 2016, updated 2018)](http://arxiv.org/abs/1607.01649)
+- Roman Vershynin published a Nov 2018 300 page book [High-Dimensional Probability: An Introduction with Applications in Data Science](https://www.cambridge.org/gb/academic/subjects/statistics-probability/probability-theory-and-stochastic-processes/high-dimensional-probability-introduction-applications-data-science?format=HB#8FyVeUCeT4PcEjMp.97) published by Cambridge University Press
+  - Like many books from Cambridge University Press, they are allowing Vershynin to host a [PDF copy on his website](https://www.math.uci.edu/~rvershyn/papers/HDP-book/HDP-book.html).
+  - A good complement is [Joel Tropp's 2011 "An Introduction to Matrix Concentration Inequalities"](https://arxiv.org/abs/1501.01571)
+- David P. Woodruff has a 157 page monograph [Sketching as a Tool for Numerical Linear Algebra](http://dx.doi.org/10.1561/0400000060) from 2014 as part of the Foundations and Trends in Theoretical Computer Science series.
+  - You can access the text via the [arXiv version](https://arxiv.org/abs/1411.4357)
+- Michael Mahoney has a 100 page monograph [Randomized algorithms for matrices and data](http://dx.doi.org/10.1561/2200000035) from 2011 as part of the Foundations and Trends® in Machine Learning series
+  - You can access the text via the [arXiv version](https://arxiv.org/abs/1104.5557)
+- [Lectures on Randomized Numerical Linear Algebra, by Michael Mahoney and Petros Drineas, 2017](http://arxiv.org/abs/1712.08880), "This chapter is based on lectures on Randomized Numerical Linear Algebra from the 2016 Park City Mathematics Institute summer school on The Mathematics of Data."
+
+## Textbooks for related topics
+For numerical linear algebra, see [Applied Numerical Linear Algebra by James Demmel (SIAM 1997)](https://epubs.siam.org/doi/book/10.1137/1.9781611971446?mobileUi=0). You have free access to a PDF version of each chapter if you are on CU campus
