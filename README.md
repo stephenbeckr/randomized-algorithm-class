@@ -91,6 +91,7 @@ Here is a list of monographs that are helpful:
 - Michael Mahoney has a 100 page monograph [Randomized algorithms for matrices and data](http://dx.doi.org/10.1561/2200000035) from 2011 as part of the Foundations and Trends® in Machine Learning series
   - You can access the text via the [arXiv version](https://arxiv.org/abs/1104.5557)
 - [Lectures on Randomized Numerical Linear Algebra, by Michael Mahoney and Petros Drineas, 2017](http://arxiv.org/abs/1712.08880), "This chapter is based on lectures on Randomized Numerical Linear Algebra from the 2016 Park City Mathematics Institute summer school on The Mathematics of Data."
+- Alex Gittens teaches [CSCI 6220 Randomized Algorithms](http://www.cs.rpi.edu/~gittea/teaching/fall2018/csci6220-and-4030.html) at RPI and covers good material
 
 ## Textbooks for related topics
 For numerical linear algebra, see [Applied Numerical Linear Algebra by James Demmel (SIAM 1997)](https://epubs.siam.org/doi/book/10.1137/1.9781611971446?mobileUi=0). You have free access to a PDF version of each chapter if you are on CU campus
