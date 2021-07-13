@@ -3,7 +3,7 @@ Randomized algorithm class at CU Boulder, Fall 2021, [Professor Becker](http://a
 
 NOTE: Fall 2021, this is APPM/STAT 5650.  These course materials were created Spring 2019 when the same class was taught (also by Stephen Becker) under the special topics designation APPM 4720/5720; we are slowly updating the materials for Fall 2021 (there are no major changes -- the spirit of the class is the same as it was in 2019).  An earlier version of the special topics course was taught by Prof. Gunnar Martinsson.
 
-Course information can be found at the public [course website](https://www.colorado.edu/amath/appm-47205720-open-topicsrandomized-algorithms-spring-2019)
+The course meets MWF	10:20 AM - 11:10 AM	ECCR 257, though this may change. The current plan is for the course to meet in person, assuming COVID-19 levels remain reasonable in Boulder.
 
 The actual topics we covered, and links to references, are on this [google sheet](https://docs.google.com/spreadsheets/d/1z2yT99o8nCiotU0OZbrmmk0kAjff5iUDhKo3fpRVORA/edit?usp=sharing).  See below for a high-level list of what we covered. There was no single textbook for the class (and no standard set of notes).
 
