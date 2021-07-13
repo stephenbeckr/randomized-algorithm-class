@@ -1,5 +1,7 @@
-# Randomized Algorithm Class spring 2019
-Randomized algorithm class at CU Boulder, Spring 2019, [Professor Becker](http://amath.colorado.edu/faculty/becker/)
+# Randomized Algorithm Class, APPM/MATH 5650, Fall 2021
+Randomized algorithm class at CU Boulder, Fall 2021, [Professor Becker](http://amath.colorado.edu/faculty/becker/)
+
+NOTE: Fall 2021, this is MATH/STAT 5650.  These course materials were created Spring 2019 when the same class was taught (also by Stephen Becker) under the special topics designation APPM 4720/5720; we are slowly updating the materials for Fall 2021 (there are no major changes -- the spirit of the class is the same as it was in 2019).
 
 Course information can be found at the public [course website](https://www.colorado.edu/amath/appm-47205720-open-topicsrandomized-algorithms-spring-2019)
 
@@ -8,10 +10,10 @@ The actual topics we covered, and links to references, are on this [google sheet
 This git repo contains things like code demos used in class. Most of the code is in Matlab; if any students want to translate demos to other languages and then push them, just make a pull request
 - [Demos](Demos/)
 - [Homeworks](Homeworks/) (homework solutions and code are on the private Canvas website)
-- [Class policies, etc.](APPM4720_5720_Spr2019_Syllabus.pdf)
+- [Class policies, etc., for Spring 2019](APPM4720_5720_Spr2019_Syllabus.pdf)  (this will be updated for 2021)
 
 # Student projections
-Here is a [PDF showing a brief summary of the end-of-semester student projects](SlideshowAllPresentations_4720Spr19_Randomized.pdf).  If you're interested in the Shazam-like song matching algorithm (using locality sensitive hashing), their code is at [Padraig's github site](https://github.com/Lysandr/minHash_Shazam)
+Here is a [PDF showing a brief summary of the end-of-semester student projects from Spring '19](SlideshowAllPresentations_4720Spr19_Randomized.pdf).  If you're interested in the Shazam-like song matching algorithm (using locality sensitive hashing), their code is at [Padraig's github site](https://github.com/Lysandr/minHash_Shazam)
 
 # Syllabus
 - Introduction
