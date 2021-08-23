@@ -56,7 +56,7 @@ The overall grade may be **curved** as appropriate (not guaranteed), but note th
 
 ## Late assignment and cheating policy
 
-In general, **late homework** assignments are not accepted; instead, you can use your two dropped homeworks.  Under exceptional circumstances (such as serious illness, including COVID-19, or serious family issues), homework can be turned in late.  If the reason is foreseeable (e.g., planned travel), you must contact the instructor in advance.
+In general, **late homework** assignments are not accepted; instead, you can use your one dropped homework.  Under exceptional circumstances (such as serious illness, including COVID-19, or serious family issues), homework can be turned in late.  If the reason is foreseeable (e.g., planned travel), you must contact the instructor in advance.
 
 Examples:
 - Your sister is getting married and you have to travel out-of-state.  That's great, but this is when you use the one dropped homework. This is foreseeable, and not an "emergency", so it does not count as an exceptional circumstance.
