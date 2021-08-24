@@ -2,8 +2,10 @@
 
 Below are the demos from Spring 2019, which we will use and modify Fall 2021. Most are Matlab, some are Python or Julia.  TODO: create ipynb versions (with colab links) for the Python demos. (If a student wants to do this, please go ahead, and make a pull request)
 
-- Demo 1: a simple randomized SVD algorithm assuming exactly low-rank matrix
-- Demo 2: compare deterministic and randomized bubble and quicksorts
+The hyperlinks below are to ipynb (jupyter) notebooks using [nbviewer](https://nbviewer.jupyter.org) since github's default markdown interpreter doesn't always work (it often works if you refresh the page a few times, but not always)
+
+- [Demo 1](https://nbviewer.jupyter.org/github/stephenbeckr/randomized-algorithm-class/blob/master/Demos/demo01_exactRankR.ipynb): a simple randomized SVD algorithm assuming exactly low-rank matrix, ([colab link for ipynb](https://colab.research.google.com/github/stephenbeckr/randomized-algorithm-class/blob/master/Demos/demo01_exactRankR.ipynb))
+- [Demo 2](https://nbviewer.jupyter.org/github/stephenbeckr/randomized-algorithm-class/blob/master/Demos/demo02_sorts.ipynb): compare deterministic and randomized bubble and quicksorts, ([colab link for ipynb](https://colab.research.google.com/github/stephenbeckr/randomized-algorithm-class/blob/master/Demos/demo02_sorts.ipynb))
 - Demo 3: compare different ways to compute the Frobenius norm of a matrix (in C)
 - Demo 4: same as demo 3 but for sparse matrices (in Matlab). Comparse row vs column access
 - Demo 5: speed/timing results for various Fast Johnson-Lindenstrauss Transforms
@@ -24,3 +26,9 @@ Below are the demos from Spring 2019, which we will use and modify Fall 2021. Mo
 - Demo 20: Core sets for Kmeans using Kmeans++ as coarse approximation
 
 At some point I thought I had a distinction between "vignettes" and "demos" but I think that is gone now, and I've tried to rename them all to "demo"
+
+
+### ipynb notebooks not rendering
+Do you ever get the error message "Sorry, something went wrong. Reload?" when clicking on a `ipynb` file? If so, try refreshing the page a few times. If that doesn't resolve it soon (sometimes it does, sometimes it doesn't), then you can try either
+1. go to <https://colab.research.google.com/> directly and "open" the file using the github interface
+2. view the file by going to <https://nbviewer.jupyter.org/> and pasting in the URL
