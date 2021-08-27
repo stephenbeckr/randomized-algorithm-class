@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     if (VECTORIZE){
         printf("Vectorizing (this is the *proper* way, no 'for' loops)\n");
         INCX = 1;
-        length = m + n;
+        length = m * n;
         s = dnrm2( &length, A, &INCX );
 
         free( A );
