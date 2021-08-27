@@ -11,9 +11,10 @@
  * Usage:
  *   gcc demo03_FrobeniusNorm.c -O3
  *   ./a.out n      # uses a n x n matrix
- *   ./a.out n 1    # if a 2nd argument is nonzero, use row-based version
+ *   ./a.out n 1    # if a 2nd argument is positive, use row-based version
  *   gcc demo03_FrobeniusNorm.c -O3 -I/Applications/MATLAB_R2017b.app/extern/include -lblas
- *   ./a.out n 1 1   # if a 3rd argument is nonzero, use BLAS for rows/columns
+ *   ./a.out n 1 1   # if a 3rd argument is positve, use BLAS for rows/columns
+ *      ... if this 3rd argument is negative, use BLAS and vectorize
  *
  * Results for 10,000 x 10,000:
  * NO BLAS:
@@ -28,10 +29,10 @@
 
 int main(int argc, char *argv[]) {
 
-    ptrdiff_t m, n;
+    ptrdiff_t m, n, length;
     ptrdiff_t INCX;
     int     i, j; /* counters */
-    int     ROW_BASED, USE_BLAS; /* boolean flags */
+    int     ROW_BASED, USE_BLAS, VECTORIZE = 0; /* boolean flags */
     double  *A;
     double  s=0.; /* sum */
     double  t = 0.;
@@ -65,10 +66,27 @@ int main(int argc, char *argv[]) {
         ROW_BASED = 0;
     if ( (argc > 3 ) && (atoi(argv[3])>0) )
         USE_BLAS = 1;
+    else if ( (argc > 3 ) && (atoi(argv[3])<0) ) {
+        USE_BLAS = 1;
+        VECTORIZE = 1;
+    }    
     else
         USE_BLAS = 0;
     if (USE_BLAS)
         printf("Using BLAS\n");
+    if (VECTORIZE){
+        printf("Vectorizing (this is the *proper* way, no 'for' loops)\n");
+        INCX = 1;
+        length = m + n;
+        s = dnrm2( &length, A, &INCX );
+
+        free( A );
+        printf("... sum of squared entries is %e\n", s );
+
+        return 0;
+
+
+    }
 
     if (ROW_BASED == 1 ){
         printf("Looping over columns, inner loop over rows\n");
@@ -100,7 +118,6 @@ int main(int argc, char *argv[]) {
     }
     free( A );
     printf("... sum of squared entries is %e\n", s );
-
 
     return 0;
 
