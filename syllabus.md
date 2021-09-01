@@ -27,8 +27,9 @@ Location: ECCR 257 "Newton Lab" (this is in the engineering center, classroom wi
 3 hours per week, hold in a hybrid fashion: attend the physical office (338 ECOT) or via zoom (link is posted in Canvas)
 
 Times: 
-- Wed 4:10 PM to 5:10 PM
+- (Wed office hours are now permanently on Friday, since HW is now due Monday)
 - Thu 3 to 5 PM
+- Fri 3 to 4 PM
 
 ## Estimated Workload
 This is intended to have a normal workload for an elective course, lower than the workload for a core course.  This is official a three credit course (the standard kind of course).

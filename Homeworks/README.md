@@ -5,7 +5,7 @@ For APPM 5650 Randomized Algorithms, Fall 2021.
 HW solutions are on Canvas
 
 - [HW 1](APPM5650Fall21_RandomizedAlgos_HW01.pdf), due Friday Aug 27, 2021 (topics: read some of Mahoney, Martinsson and Tropp, and Vershynin)
-- [HW 2](APPM5650Fall21_RandomizedAlgos_HW02.pdf), due Friday Sep 3, 2021 (topics: linear algebra, sparse matrices, Freivald's algorithm, random orthogonal matrices)
+- [HW 2](APPM5650Fall21_RandomizedAlgos_HW02.pdf), due Monday Sep 6, 2021 (topics: linear algebra, sparse matrices, Freivald's algorithm, random orthogonal matrices)
 
 # Turning in HW
 While the class meets in person, please turn in **hard-copies** of your homework in class.
