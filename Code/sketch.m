@@ -107,7 +107,7 @@ switch lower(typeOfSketch)
             msg = 'Using slow countSketch, please compile countSketch.c';
             msg = [msg,'\n To turn this warning off, call warning(''off'',''sketch:slowCount'')'];
             warning('sketch:slowCount',msg);
-            fcn     = @(A) slowCountSketch( D*A, double(indx_map) );
+            fcn     = @(A) slowCountSketch( D*A, double(indx_map), m );
         end
 
     case 'fjlt'
@@ -174,9 +174,8 @@ end
 
 end % end of main function
 
-function Y = slowCountSketch( DX, targetRows )
+function Y = slowCountSketch( DX, targetRows, m )
 % slow version of count sketch
-    m   = length( targetRows );
     Y   = zeros(m, size(DX,2) );
     for j = 1:size(DX,1)
         i   = targetRows(j);
