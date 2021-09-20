@@ -8,6 +8,7 @@ HW solutions are on Canvas
 - [HW 2](APPM5650Fall21_RandomizedAlgos_HW02.pdf), due Monday Sep 6, 2021 (topics: linear algebra, sparse matrices, Freivald's algorithm, random orthogonal matrices). Turn this in via Gradescope since there's no class Monday (Labor Day)
 - [HW 3](APPM5650Fall21_RandomizedAlgos_HW03.pdf), due Monday Sep 13, 2021 (topics: linear algebra, basis probability, account on [CU's research computing](https://www.colorado.edu/rc).
 - [HW 4](APPM5650Fall21_RandomizedAlgos_HW04.pdf), due Monday Sep 20, 2021 (topics: large data files, random projections vs tSNE)
+- [HW 5](APPM5650Fall21_RandomizedAlgos_HW05.pdf), due Monday Sep 27, 2021 (topics: random projections)
 
 # Turning in HW
 While the class meets in person, please turn in **hard-copies** of your homework in class.
