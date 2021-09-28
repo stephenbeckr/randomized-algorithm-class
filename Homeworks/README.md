@@ -9,6 +9,7 @@ HW solutions are on Canvas
 - [HW 3](APPM5650Fall21_RandomizedAlgos_HW03.pdf), due Monday Sep 13, 2021 (topics: linear algebra, basis probability, account on [CU's research computing](https://www.colorado.edu/rc).
 - [HW 4](APPM5650Fall21_RandomizedAlgos_HW04.pdf), due Monday Sep 20, 2021 (topics: large data files, random projections vs tSNE)
 - [HW 5](APPM5650Fall21_RandomizedAlgos_HW05.pdf), due Monday Sep 27, 2021 (topics: random projections)
+- [HW 6](APPM5650Fall21_RandomizedAlgos_HW06.pdf), due Monday Oct 4, 2021 (topics: different types of sampling without replacement)
 
 # Turning in HW
 While the class meets in person, please turn in **hard-copies** of your homework in class.
