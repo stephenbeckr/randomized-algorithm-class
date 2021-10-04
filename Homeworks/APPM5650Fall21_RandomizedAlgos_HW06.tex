@@ -1,0 +1,283 @@
+\RequirePackage[l2tabu, orthodox]{nag}	% tells out-of-date packages
+\documentclass[10pt, letterpaper]{scrartcl}
+
+\usepackage{amssymb,amsfonts}
+%\usepackage{amsthm} % if using theorems and proofs
+\usepackage[cmex10]{amsmath}
+\usepackage[usenames,dvipsnames,svgnames]{xcolor} % use like \textcolor{red}{..} or {\color{red} ...}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}% can also add 'nohead', or leave blank
+
+%\usepackage{url}
+
+%\usepackage{cancel} % for canceling terms
+%
+%\usepackage{booktabs}
+
+\usepackage{pdfpages} % for including pdfs
+
+
+\usepackage{algpseudocode}  %algorithmicx
+\usepackage{wrapfig}
+
+%\usepackage{listings}
+\usepackage[numbered,framed]{matlab-prettifier}
+\lstdefinestyle{mat}{
+    frame=single,
+    language=matlab,
+    showstringspaces=false,
+    %  keywordstyle=\bfseries\color{blue},
+    %  commentstyle=\color{green},
+    %  stringstyle=\color{magenta},
+}
+\lstset{
+    style              = Matlab-editor,
+    basicstyle         = \mlttfamily,
+    escapechar         = ",
+    mlshowsectionrules = true,
+}
+%% use withL: \lstinputlisting{myODEfunction.m}
+
+%\renewtheorem{theorem}{Theorem}
+%\usepackage{chngcntr}
+%\counterwithin{equation}{section}
+%\counterwithout{equation}{section}
+%\counterwithout{Theorem}{section}
+
+
+
+%\usepackage{pgf,tikz}
+%\usetikzlibrary{arrows}
+%\definecolor{ffqqqq}{rgb}{1.,0.,0.}
+%\usepackage[caption=false]{subfig}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % important!
+
+\usepackage{hyperref}
+\hypersetup{pdfauthor={Stephen Becker},
+    pdftitle={},
+    colorlinks=true,
+    citecolor=MidnightBlue,
+    urlcolor=Bittersweet,
+}
+% -- Input macros and such --
+\IfFileExists{custom_headers.tex}{
+\input{custom_headers}}{
+\input{../custom_headers}}{
+}
+\let\oldenumerate\enumerate
+\renewcommand{\enumerate}{
+  \oldenumerate
+  \setlength{\itemsep}{1em}
+  \setlength{\parskip}{1em}
+  \setlength{\parsep}{0pt}
+}
+\usepackage{enumitem}
+%\setlist{noitemsep}
+% See http://mirrors.fe.up.pt/pub/CTAN/macros/latex/contrib/enumitem/enumitem.pdf
+% and now, set par indent to zero
+\newlength{\savedparindent}
+\setlength{\savedparindent}{\parindent}
+\setlist[enumerate]{listparindent=\savedparindent}
+%\setlength{\parindent}{0pt} % Jan 2017, HW 3/4, comment this out.
+
+\usepackage{xspace}
+%\newcommand{\collaboration}{\textbf{Collaboration Allowed}\xspace}
+%\newcommand{\nocollaboration}{\textbf{No Collaboration}\xspace}
+
+\renewcommand{\T}{\mathbb{T}}
+\newcommand{\fn}{\widehat{f}_n} % Fourier coefficients
+\newcommand{\spi}{\frac{1}{\sqrt{2\pi}}}
+\renewcommand{\H}{\mathcal{H}}
+\renewcommand{\phi}{\varphi}
+\DeclareMathOperator{\ran}{ran} % ker already defined, and with lower case
+
+\newcommand*\Laplace{\mathop{}\!\mathbin\bigtriangleup}
+\renewcommand{\SS}{\mathcal{S}} % Schwartz space
+
+% My solution environment
+%%\newenvironment{solution}{\setlength{\parindent}{\savedparindent}{\bfseries Solution}:}{}
+\makeatletter
+\newcommand\solParagraph{\@startsection{paragraph}{4}{\z@}%
+%    {-3.25ex \@plus -1ex \@minus -0.2ex}%
+    {-.55ex \@plus -1ex \@minus -0.2ex}%
+    {0.01pt}%
+    {\raggedsection\normalfont\sectfont\nobreak\size@paragraph}%
+}
+\makeatother
+\newenvironment{solution}{\setlength{\parindent}{\savedparindent}\solParagraph{Solution:}}{}
+
+%\newenvironment{solution}{\emph{Solution}:}{}
+\newenvironment{instructions}{}{}
+\newenvironment{SolnComment}{}{}
+\usepackage{comment} 
+
+\def\solutions{1}  % define solutions  % !!! COMMENT or UNCOMMENT THIS LINE
+
+% NOTE: \begin{solution} should have NO SPACES BEFORE OR AFTER IT,
+% 	Can give very weird errors, hiding text, etc. See http://tex.stackexchange.com/a/91431/4603
+\ifdefined\solutions
+    \newcommand{\solTitle}[1]{#1}
+    \excludecomment{instructions}
+    
+%\usepackage{draftwatermark}
+%\SetWatermarkText{\textcopyright 2021 Stephen Becker}
+%\SetWatermarkScale{0.5}    \SetWatermarkLightness{0.920}
+
+% If using pdfpages, use this so PDF inserted is readable: (https://tex.stackexchange.com/a/121243)
+\AddToShipoutPicture{%
+    \AtTextCenter{%
+        \makebox[0pt]{%
+            \scalebox{8}{%
+                \rotatebox[origin=c]{45}{%
+                    \color[gray]{.92}\normalfont \textcopyright 2021 Stephen Becker}}}}}
+    
+\else
+   \excludecomment{solution}% uncomment this line to hide solution
+   \newcommand{\solTitle}[1]{}
+   \excludecomment{SolnComment}
+\fi
+
+
+\title{Homework 6 \solTitle{Selected Solutions} \\APPM 5650 Fall 2021 \\ Randomized Algorithms}
+%\author{Stephen Becker}
+\date{}
+\begin{document}
+\maketitle
+\vspace{-6em}
+\textbf{\sffamily Due date}: Monday, Oct 4 2021
+\hfill \textbf{\sffamily Instructor}: Prof.\ Becker
+
+\textbf{\sffamily Theme}: Reading and sampling
+\hfill \textbf{\sffamily Revision date}: 9/30/2021
+%Theme: Background   \hfill Instructor: Stephen Becker %Dr.\ Becker
+%\vspace{1em}
+
+\begin{instructions}
+\paragraph{Instructions}
+Collaboration with your fellow students is allowed and in fact recommended, although direct copying is not allowed.  Please write down the names of the students that you worked with. The internet is allowed for basic tasks only, not for directly looking for solutions.
+
+An arbitrary subset of these questions will be graded.
+
+%\paragraph{Reading} 
+%%Students are \textbf{strongly advised} to skim appendices A and C in [BV2004] to look for unfamiliar material (and read in more detail if there is unfamiliar material)
+%
+%%\vspace{1em}
+%%\textbf{Special instructions this week}:
+%
+\end{instructions}
+
+
+
+
+\begin{enumerate}[align=left, leftmargin=*, label=\sffamily\bfseries Problem \arabic*:]   
+ 
+    \item \ [READING] Read sections 1 (``Overview'') and 2 (``Related Work and Historical Context'') from ``Finding structure with randomness: Stochastic algorithms for constructing approximate matrix decompositions'' by Halko, Martinsson and Tropp (SIAM Review 2011) available at     
+    \url{http://users.cms.caltech.edu/~jtropp/papers/HMT11-Finding-Structure-SIREV.pdf}
+    
+    \textbf{Deliverable}:
+Write at least 1 paragraph about your response to the reading, e.g., what did you find interesting? Or, according to the authors, when did randomized methods start to have an impact on numerical linear algebra? What do the authors claim is responsible for some of the resistance in adopting randomized techniques?
+
+% New, 2021
+% Via Appendix (section 7) in Emmanuel's RPCA paper
+\item \ [MATH] Sampling schemes.  We would like to sample roughly $k$ items out of $n$. We'll consider only sampling without replacement schemes for this problem, so our samples $\Omega$ can be written as a set (we don't need an ordered list).  We'll consider two models:
+{
+\renewcommand{\S}{\texttt{success}}
+\newcommand{\bigmid}{\,\big|\,}
+\newcommand{\probk}[2]{\P_{\text{SRS}(#1)}\left[#2\right]} % can change [] to ()
+\newcommand{\probrho}[2]{\P_{\text{Ber}(#1)}\left[#2\right]}
+\begin{itemize}
+\item SRS (simple random sample, without replacement) which is uniformly sampling all possible subsets of size $k$. We write $\probk{k}{\cdot}$ to denote sampling under this model.  The sampled set $\Omega$ is always of size $k$.
+\item Bernoulli sampling with rate $\rho \approx k/n$. Each entry of $[n]$ is included in $\Omega$ with probability $\rho$, all done independently of the other entries, so $\E[ |\Omega| ] = \rho n \approx k$. We write $\probrho{\rho}{\cdot}$ to denote sampling under this model.
+\end{itemize}
+
+
+We consider some randomized algorithm, and we wish for it to be successful (meaning, say, that the error is below some given threshold). We let $\S$ be the event that the algorithm is successful.  Our main assumption is that more samples in $\Omega$ is better: specifically, that 
+\begin{equation}\label{assumption}
+\probk{k}{\S} \le \probk{k'}{\S}\; \text{ if }\; k\le k' \tag{Assumption}
+\end{equation}
+
+
+
+%\begin{enumerate}
+%\item
+ We'll show that if we  can control the probability of success under the Bernoulli scheme, then we can also control it under the SRS scheme (hence we could analyze the Bernoulli scheme but do the SRS scheme in practice and still have similar guarantees).  Specifically, let $\Omega$ be a sampled set drawn under the Bernoulli scheme with parameter $\rho$, and do the following:
+\begin{enumerate}
+\item Explain why $\probrho{\rho}{ \S \bigmid |\Omega|=k } = \probk{k}{ \S}$
+
+\begin{solution}
+A simple random sample means that all subsets of size $k$ are equally likely.  Clearly Bernoulli sampling doesn't favor any one element over another, so since it has size $k$ (due to the conditional probability), it's a simple random sample.
+\end{solution}
+
+\item Under \eqref{assumption}, show that  \label{item2}
+\[
+% \probk{k}{\S} \ge \probrho{\rho}{\S} - \probrho{\rho}{ \, |\Omega| < k }.
+ % Fix that Noki noticed (I have to modify RPCA result since they had assumption backward)
+  \probk{k}{\S} \ge \probrho{\rho}{\S} - \probrho{\rho}{ \, |\Omega| > k }.
+\]
+{\em Hint}: use the Law of Total Probability, conditioning on the size of $\Omega$.
+
+\begin{solution}
+\begin{align*}
+\probrho{\rho}{\S} &= \sum_{j=0}^n \probrho{\rho}{\S \bigmid |\Omega|=j)} \cdot \probrho{\rho}{\; |\Omega|=j } \\
+&= \sum_{j=0}^n \probk{j}{\S } \cdot \probrho{\rho}{ \;|\Omega|=j } \text{ via the previous problem}\\
+&= \sum_{j=k+1}^{n} \underbrace{\probk{j}{\S }}_{\le 1} \cdot \probrho{\rho}{\; |\Omega|=j } +\sum_{j=0}^{k} \probk{j}{\S } \cdot \probrho{\rho}{\, |\Omega|=j } \\
+&\le \sum_{j=k+1}^{n} \probrho{\rho}{\, |\Omega|=j } + \sum_{j=0}^{k} \probk{j}{\S}\cdot \probrho{\rho}{ |\Omega|=j } \\
+&=  \probrho{\rho}{\, |\Omega| > k } + \sum_{j=0}^{k} \probk{j}{\S}\cdot \probrho{\rho}{ |\Omega|=j } \\
+&\le  \probrho{\rho}{\, |\Omega| > k } + \probk{k}{\S}\underbrace{\sum_{j=0}^{k} \cdot \probrho{\rho}{ |\Omega|=j }}_{\probrho{\rho}{\, |\Omega| \le k } \le 1 }  \\
+&\le \probrho{\rho}{\, |\Omega| > k } + \probk{k}{\S}
+%
+% OLD: 
+%&= \sum_{j=0}^{k-1} \underbrace{\probk{j}{\S }}_{\le 1} \cdot \probrho{\rho}{\; |\Omega|=j } +\sum_{j=k}^{n} \probk{j}{\S } \cdot \probrho{\rho}{\, |\Omega|=j } \\
+%&\le \sum_{j=0}^{k-1} \probrho{\rho}{\, |\Omega|=j } + \sum_{j=k}^{n} \probk{j}{\S}\cdot \probrho{\rho}{ |\Omega|=j } \\
+%&=  \probrho{\rho}{\, |\Omega| < k } + \sum_{j=k}^{n} \probk{j}{\S}\cdot \probrho{\rho}{ |\Omega|=j } \\
+%&\le  \probrho{\rho}{\, |\Omega| < k } + \probk{k}{\S}\underbrace{\sum_{j=k}^{n} \cdot \probrho{\rho}{ |\Omega|=j }}_{\probrho{\rho}{\, |\Omega| \ge k } \le 1 }  \\
+%&\le \probrho{\rho}{\, |\Omega| < k } + \probk{k}{\S}
+\end{align*}
+which, after re-arranging, gives the desired result.
+\end{solution}
+
+\item For any $\delta>0$, set $\epsilon = \sqrt{\frac{\ln(\delta^{-1})}{2n} }$ and set 
+$\rho = k/n - \epsilon$, 
+%$\rho = k/n + \epsilon$,  % wrong, due to inequality direction that Noki noticed
+so we expect $\Omega$ to have size $k+\epsilon n$.  Show $ \probk{k}{\S} \ge \probrho{\rho}{\S} - \delta$.
+{\em Hint}: use a concentration inequality.
+
+\begin{solution}
+Let $\rho = k/n + \epsilon$, then 
+\begin{align*}
+\probrho{\rho}{ \,|\Omega|>k } &= \probrho{\rho}{ \,\frac1n|\Omega|> \frac{k}{n} } \\
+&= \probrho{\rho}{ \,\frac1n|\Omega|> \rho + \epsilon } \\
+&\le \text{exp}( -2n\epsilon^2 ) \quad\text{via Hoeffding's inequality} \\
+&= \delta
+\end{align*}
+and then apply the previous problem.  Specifically, to apply Hoeffding, we let $X_i$ be $1$ if we select entry $i$ (so this is distributed $\sim\text{Bernouilli}(\rho)$), and so $(X_i)$ is iid, and furthermore $|\Omega| = \sum_{i=1}^n X_i$.
+
+% Below was for when I had |Omega| > k, but changing to |Omega|<k since Noki noticed it
+%Let $\rho = k/n + \epsilon$, then 
+%\begin{align*}
+%\probrho{\rho}{ \,|\Omega|<k } &= \probrho{\rho}{ \,\frac1n|\Omega|< \frac{k}{n} } \\
+%&= \probrho{\rho}{ \,\frac1n|\Omega|< \rho - \epsilon } \\
+%&\le \text{exp}( -2n\epsilon^2 ) \quad\text{via Hoeffding's inequality} \\
+%&= \delta
+%\end{align*}
+%and then apply the previous problem.
+\end{solution}
+
+
+
+\end{enumerate}
+%\end{enumerate}
+
+\vspace{2ex}
+[NO WORK NECESSARY] Note that similar arguments can also be used to show that $\probrho{\rho}{\S} \ge \probk{k}{\S}(1 - \delta)$ for $k = n\rho - \epsilon$ for a similar $\epsilon$ to the previous problem, meaning that if you analyzed SRS sampling but wanted to do Bernouilli sampling in practice, you also get guarantees.
+
+This problem somewhat follows the Appendix in \href{http://arxiv.org/abs/0912.3599}{\emph{Robust Principal Component Analysis?}} by Cand\`es, Li, Ma and Wright 2009 (but don't look \emph{before} attempting the above problems; also, we fix a typo and hence need to adjust several results).
+
+}
+
+
+\end{enumerate}   
+\end{document}
