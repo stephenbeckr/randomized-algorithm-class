@@ -2,8 +2,8 @@
 Demo for 1D leverages scores
 
 Fig. 2 in Section 6.1 of 
-"?Randomized algorithms for matrices and data"
-(Mahoney, 2011, ?http://arxiv.org/abs/1104.5557 )
+"Randomized algorithms for matrices and data"
+(Mahoney, 2011, http://arxiv.org/abs/1104.5557 )
 
 is misleading, since it discussing perturbing regressors and data
 
