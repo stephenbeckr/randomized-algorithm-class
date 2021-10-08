@@ -60,3 +60,47 @@ for i = 1:5
     title(sprintf('Moving %d^{th} data point',i))
 
 end
+
+%% Part 2: weighted sampling
+% This was added October 2021 (and ipynb also updated)
+% Shows how to do weighted sampling, where the weights could be from, e.g., leverage scores
+% We confirm that the scaling is done correctly by seeing if we converge to the identity
+
+M   = 10;
+m   = 5;
+% S is m x M
+
+% Usually weights is calculated based on A (if we're doing leverage scores, 
+% but for now let's just use random weights.
+rng(1);
+weights     = rand(M,1) + 1e-2;
+weights(1)  = 3;
+weights     = weights/sum(weights);  % these are our normalized leverage scores
+
+nReps   = 1e5;
+StS     = zeros(M);
+I       = eye(M);
+errList = zeros(nReps,1);
+
+withReplacement = true;
+
+for trial = 1:nReps
+    omega   = randsample( M, m, withReplacement, weights );
+    scaling = 1./sqrt(m.*weights(omega));
+%     S       = diag( normalization ) * I( omega, : );
+    % or, another way to do this
+    S       = bsxfun( @times, scaling, I(omega,:) );
+    
+    StS     = StS + S'*S;
+    % We want E[ S'*S ] = I
+    % E[ S'*S ] = E[  sum_j  S(j,:)'*S(j,:) ]
+    
+    errList( trial ) = norm( StS/trial - I, 'fro' );
+    
+end
+%% and plot it
+
+figure(1); clf;
+loglog( smooth( errList, 1e3 ) )
+xlabel('Repetitions');
+ylabel('Error ||S^TS-I||_F');
