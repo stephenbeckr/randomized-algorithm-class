@@ -11,6 +11,7 @@ HW solutions are on Canvas
 - [HW 5](APPM5650Fall21_RandomizedAlgos_HW05.pdf), due Monday Sep 27, 2021 (topics: random projections)
 - [HW 6](APPM5650Fall21_RandomizedAlgos_HW06.pdf), due Monday Oct 4, 2021 (topics: different types of sampling without replacement)
 - [HW 7](APPM5650Fall21_RandomizedAlgos_HW07.pdf), due Monday Oct 11, 2021 (topics: least squares)
+- [HW 8](APPM5650Fall21_RandomizedAlgos_HW08.pdf), due Monday Oct 18, 2021 (topics: entry-wise sampling)
 
 # Turning in HW
 While the class meets in person, please turn in **hard-copies** of your homework in class.
