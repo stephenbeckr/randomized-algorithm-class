@@ -1,6 +1,6 @@
 """
 Implements some randomized linear sketches 
-    (Gaussian, Haar, Count, FJLT with DCT, FJLT with Hadamard)
+    (Gaussian, Haar, Count, FJLT with DCT, FJLT with Hadamard, Subsample)
 as well as some helper routines
     (Implicit2Explicit, TestAdjoints, TestSketch)
 
@@ -18,15 +18,21 @@ to make this a proper subclass of LinearOperator and then add the methods,
 Major TODO: implement efficient adjoints for these operators (for the implicit ones,
  i.e., the FJLT ones, since the dense/sparse matrix based ones automatically
  have nice adjoints)
+    Note: adjoints are not too useful for sketches since they *increase* the dimensionality,
+    but they're useful in some academic cases (e.g., testing)
+
+TODO: adjoints are done, except for sampling with replacement.
 
 """
 import numpy as np
+from numpy.linalg import norm
 import scipy.sparse
 from scipy.sparse.linalg import LinearOperator, aslinearoperator, onenormest
 from scipy.fft    import dct, idct
+import logging
 
-__all__ = ['fwht','Sketch','Gaussian','Haar','Count','FJLT','FJLT_Hadamard',
-    'Implicit2Explicit','TestAdjoints','TestSketch']
+__all__ = ['fwht','Sketch','Gaussian','Haar','Count','FJLT','FJLT_Hadamard','Subsample',
+    'Implicit2Explicit','TestAdjoints','TestSketch','spectral_norm']
 
 
 def Sketch( fcnName, *args, **kwargs ):
@@ -42,7 +48,7 @@ def Sketch( fcnName, *args, **kwargs ):
         behavior of these functions is untested and may break.
     """
 
-    sketchTypes = {'gaussian':Gaussian, 'jlt':Gaussian, 'haar':Haar,
+    sketchTypes = {'gaussian':Gaussian, 'jlt':Gaussian, 'haar':Haar,'subsample':Subsample,
         'count':Count, 'fjlt':FJLT, 'fjlt_dct':FJLT, 'fjlt_hadamard':FJLT_Hadamard }
     
     try:
@@ -82,8 +88,24 @@ def FJLT(sz,  rng=np.random.default_rng() ):
     d       = np.sign( rng.standard_normal(size=M) ).astype( np.int64 ) # or rng.choice([1, -1], M)
     ind     = rng.choice( M, size=m, replace=False, shuffle=False)
     # IMPORTANT: make sure axis=0
-    fjltMatMat = lambda X : np.sqrt(M/m)*_subsample( dct( _elementwiseMultiply(d,X), norm='ortho',type=3, axis=0) , ind)
-    S       = LinearOperator( (m,M), matvec = fjltMatMat, matmat = fjltMatMat )
+    DCT_type = 3  # 2 or 3
+    myDCT   = lambda X : dct( X, norm='ortho',type=DCT_type, axis=0)
+    # and its transpose
+    myDCT_t = lambda X : idct( X, norm='ortho',type=DCT_type, axis=0)
+
+    f       = lambda X : np.sqrt(M/m)*_subsample( myDCT( _elementwiseMultiply(d,X)) , ind)
+    # and make adjoint operator
+    def upsample(Y):
+        if Y.ndim == 1:
+            Z = np.zeros( M )
+            Z[ind] = Y
+        else:
+            Z = np.zeros( (M,Y.shape[1]))
+            Z[ind,:] = Y
+        return Z
+    adj     = lambda Z : np.sqrt(M/m)*_elementwiseMultiply(d,myDCT_t(upsample(Z)) )
+        
+    S       = LinearOperator( (m,M), matvec = f, matmat = f, rmatvec=adj,rmatmat=adj )
     return S
 
 def FJLT_Hadamard(sz,  rng=np.random.default_rng() ):
@@ -93,24 +115,86 @@ def FJLT_Hadamard(sz,  rng=np.random.default_rng() ):
 
     d       = np.sign( rng.standard_normal(size=M) ).astype( np.int64 )
     ind     = rng.choice( M2, size=m, replace=False, shuffle=False)
-    fjltMatMat = lambda X : np.sqrt(1/m)*_subsample( fwht( _elementwiseMultiply(d,X)) , ind)
-    S       = LinearOperator( (m,M), matvec = fjltMatMat, matmat = fjltMatMat )
+    f = lambda X : np.sqrt(1/m)*_subsample( fwht( _elementwiseMultiply(d,X)) , ind)
+    d2      = np.concatenate( (d,np.zeros(M2-M,dtype=np.int64)))
+    
+    # and make adjoint operator. Hadamard transform is real-symmetric, so self-adjoint
+    def upsample(Y):
+        if Y.ndim == 1:
+            Z = np.zeros( M2 )
+            Z[ind] = Y
+        else:
+            Z = np.zeros( (M2,Y.shape[1]))
+            Z[ind,:] = Y
+        return Z
+    adj     = lambda Z : np.sqrt(1/m)*_subsample(_elementwiseMultiply(d2,fwht(upsample(Z))), range(M) )
+
+    S       = LinearOperator( (m,M), matvec = f, matmat = f, rmatvec=adj,rmatmat=adj )
+    return S
+
+def Subsample(sz, rng=np.random.default_rng(), weights=None, replacement=None ):
+    """ Does uniform or weighted subsampling, w/ appropriate scaling """
+    m, M    = sz
+    if weights is None:
+        # uniform
+        weights   = np.ones(M)/M
+        if replacement is None:
+            replacement = False
+    else:
+        # normalize. Not checking if negative or wrong size
+        weights   = weights/sum(weights)
+        if replacement is None:
+            replacement = True
+        else:
+            if replacement is False:
+                raise ValueError("Cannot do sampling without replacment with weights; set weights=None to use uniform")
+    omega   = rng.choice( M, m, replace=replacement, p=weights, shuffle=False)
+    omega_unique, omega_counts = np.unique(omega, return_counts=True)
+    omega = np.repeat(omega_unique, omega_counts) # this is sorted
+    scaling = 1/np.sqrt( m*weights[omega] )
+    fcn_f   = lambda X : _elementwiseMultiply(scaling,_subsample(X,omega))
+
+    # and make adjoint operator
+    # This is correct only for sampling without replacement!!
+    def upsample(Y):
+        if Y.ndim == 1:
+            Z = np.zeros( M )
+            Z[omega] = Y
+            # For duplicates, *usually* the last one is used
+            # There might be a clever way to avoid a "for" loop for the following
+            #  but doesn't seem worth the headache for now.
+            inds = np.nonzero( omega_counts > 1 )[0]
+            locs = omega_counts.cumsum() - 1# 0-based
+            for i in inds:
+                Z[ omega_unique[i] ] = np.sum( Y[ locs[i] - omega_counts[i]+1: locs[i]+1], axis=0 )
+        else:
+            Z = np.zeros( (M,Y.shape[1]))
+            Z[omega,:] = Y
+            # For duplicates, *usually* the last one is used
+            # There might be a clever way to avoid a "for" loop for the following
+            #  but doesn't seem worth the headache for now.
+            inds = np.nonzero( omega_counts > 1 )[0]
+            locs = omega_counts.cumsum() - 1# 0-based
+            for i in inds:
+                Z[ omega_unique[i] ] = np.sum( Y[ locs[i] - omega_counts[i]+1: locs[i]+1, : ], axis=0 )
+        return Z
+    adj     = lambda Z : upsample(_elementwiseMultiply(scaling,Z))
+
+
+    S       = LinearOperator( (m,M), matvec = fcn_f, matmat = fcn_f, rmatvec=adj,rmatmat=adj  )
     return S
 
 
-
-
-
-
+# ======= Other nice routines to have =============
 
 def Implicit2Explicit( linOp, makeSparse = False, sparseFormat = 'csc' ):
     """ returns the explicit matrix representation of a linear operator 
         If makeSparse is True, then returns a sparse format
     """
     if not isinstance(linOp, LinearOperator) :
-        raise ValueError('input must be a LinearOperator')
+        raise ValueError('input must be a Scipy.Sparse.LinearOperator')
     
-    if hasattr(linOp,'A'):
+    if _isExplicit(linOp):
         A = linOp.A  # simple!
     else:
         m,n = linOp.shape
@@ -126,8 +210,32 @@ def Implicit2Explicit( linOp, makeSparse = False, sparseFormat = 'csc' ):
         return A
     # np.hstack([self.matvec(col.reshape(-1,1)) for col in X.T])
 
-def TestAdjoints( A, At, method=None, rng = np.random.default_rng(), nReps = 10, 
+def _isExplicit( linOp ):
+    """ returns True if linOp has an explicit representation already"""
+    if not isinstance(linOp, LinearOperator) :
+        raise ValueError('input must be a LinearOperator')
+    explicit = False
+    if hasattr(linOp,'A'):
+        # linOP.A not always a matrix, so need extra check
+        if isinstance(linOp.A,np.ndarray) or scipy.sparse.issparse(linOp.A):
+            explicit = True
+    return explicit
+
+
+def TestAdjoints( A, At=None, method=None, rng = np.random.default_rng(), nReps = 10, 
         printMatrices = True, tol = 1e-10 ):
+    """ Tests if A and At are adjoints, using either an implicit method (method='implicit')
+        or an explicit method (method='explicit', slow for large problems)
+        If A is of scipy.sparse.linalg.LinearOperator class, then let At=None and this will
+        automatically call the "transpose" of A (and attempt to verify if it's really the correct
+        transpose/adjoint).  Code hasn't been designed for complex inputs, so assuming everything
+        is real-valued and hence transpose=adjoint.
+    """
+    if At is None:
+        if isinstance(A,LinearOperator):
+            At = A.T
+        else:
+            raise ValueError('Must supply the adjoint!')
     if A.ndim != 2 or At.ndim != 2:
         raise ValueError("A and At must both be matrices ")
     shapeA  = A.shape
@@ -147,13 +255,15 @@ def TestAdjoints( A, At, method=None, rng = np.random.default_rng(), nReps = 10,
         for rep in range(nReps):
             x = rng.standard_normal( size=(n,1) )
             y = rng.standard_normal( size=(m,1) )
-            err = np.max( [err,np.abs( y.T@(A*x) - (At@y).T@x )])
+            localErr = np.abs( y.T@(A*x) - (At@y).T@x  ).item(0)
+            err = max( err, localErr)
 
-        normA = onenormest(A)  # spectral norm would be more classic, but this works
-        normAt= onenormest(At)
-        print(f"After {nReps:%d} trials, max error in inner product is {err:.2e}")
-        print(f"  and ||A||_1 is {normA:.4e} while ||At||_1 is {normAt:.4e}")
-    else:
+        # onenormest(A) needs A to be square, but AAt and AtA would obviously have the same norm
+        # normA = onenormest(A)  # spectral norm would be more classic, but this works
+        # normAt= onenormest(At)
+        print(f"After {nReps:d} trials, max error in inner product is {err:.2e}")
+        # print(f"  and ||A||_1 is {normA:.4e} while ||At||_1 is {normAt:.4e}")
+    elif method.lower() == 'explicit':
         AA    = Implicit2Explicit(A)
         AAt   = Implicit2Explicit(At)
         err   = norm(AA-AAt.T)
@@ -167,16 +277,24 @@ def TestAdjoints( A, At, method=None, rng = np.random.default_rng(), nReps = 10,
             print(AA)
             print("... and At is:")
             print(AAt)
+    else:
+        raise ValueError('Bad value for "method" parameter')
 
     if err < tol:
-        print("Passed check! These are likely adjoints")
+        print(" Looks good: these are likely adjoints")
         return True
     else:
-        print("Failed check. Perhaps there is a bug")
+        print(" !! Failed check !! Perhaps there is a bug")
         return False
     
 
 def TestSketch( sz, style, nReps = 1000, printEvery = 100, rng = np.random.default_rng()  ):
+    """ style can be a string like 'FJLT' or a function returning an actual sketch object,
+      in which case it should take no arguments 
+      This attempts to verify that the sketch is isotropic, meaning E[ S^T S ] = I,
+        by looking at the empirical mean 1/n \sum_{i=1}^n S_i^T S_i  for iid copies
+        of the sketch (S_i). This empirical mean should converge to the identity.
+      """
     nReps = int(nReps)
     printEvery = int(printEvery)
     m,M = sz
@@ -186,12 +304,15 @@ def TestSketch( sz, style, nReps = 1000, printEvery = 100, rng = np.random.defau
     sumS = np.zeros( (M,M) )
 
     print('')
-    print('Testing sketch of type', style)
+    if isinstance(style, str):
+        print('Testing sketch of type', style)
     errList = []
     for rep in range(nReps):
-        #S   = Sketch( (m,M), style, rng)
-        S   = Sketch( style, (m,M), rng)
-        if hasattr(S,'A'):
+        if isinstance(style, str):
+            S   = Sketch( style, (m,M), rng)
+        else:
+            S   = style()
+        if _isExplicit(S):
             A = S.A
         else:
             A = Implicit2Explicit( S )
@@ -299,9 +420,91 @@ def _next_power_of_two(n):
     n = int(n)
     return 1<<(n-1).bit_length()
 
+
+
+def spectral_norm(A, tol=1e-8, max_iter=1000):
+    """Computes the spectral norm of a linear operator A using power iteration.
+
+    Parameters
+    ===================
+    - `A` (`numpy.ndarray`, `scipy.sparse.spmatrix`, or `scipy.sparse.linalg.LinearOperator`):
+      the matrix for which we want to compute the spectral norm.
+
+    Keyword parameters
+    ====================
+    - `tol` (float, default = `1e-8`): tolerance used to determine whether or not we
+      should stop iterating. Once the estimates for the spectral norm are within distance
+      `tol` of one another, we stop the power iterations and return.
+    - `max_iter` (int, default = `1000`): maximum number of power iterations to do. If
+      we reach this number of iterations then this function will return, but will display
+      a warning that we reached the maximum number of iterations.
+      - Power iteration can be extremely slow to converge, so you may need a large value
+        of `max_iter` in order to find the true spectral norm.
+
+    Return
+    ====================
+    - `sp_norm` (float): the estimated spectral norm of `A`.
+
+    Code by Will Shand at the request of Stephen Becker, March 2019
+    """
+    if not any(issubclass(type(A),T) for T in [np.ndarray, scipy.sparse.spmatrix, LinearOperator]):
+        raise ValueError("spectral_norm can only take arguments of type "
+                "numpy.ndarray, scipy.sparse.spmatrix, or "
+                "scipy.sparse.linalg.LinearOperator.")
+
+    # Create an anonymous function matvec_op whose effect is equivalent to multiplying
+    # the input by A'A.
+    if issubclass(type(A), LinearOperator):
+        matvec_op = lambda x: A.adjoint().matvec(A.matvec(x))
+    else:
+        matvec_op = lambda x: A.T.dot(A.dot(x))
+
+    sp_norm = 0.
+    sp_iter = np.random.normal(size = A.shape[-1])
+    for ii in range(max_iter):
+        Ax = matvec_op(sp_iter)
+        new_sp_norm = np.linalg.norm(sp_iter)
+
+        # Stopping condition when eigenvalue estimates get sufficiently close
+        if abs(new_sp_norm - sp_norm) < tol:
+            break
+        else:
+            sp_norm = new_sp_norm
+            sp_iter = Ax / new_sp_norm
+
+    if ii == max_iter-1:
+        logging.warn(" spectral_norm ran for max_iter = %d iterations "
+            "without converging. Returning..." % max_iter)
+
+    return np.sqrt(sp_norm)
+
 if __name__ == '__main__':
 
-    sketchList = ['Gaussian','Haar','Count','FJLT','FJLT_Hadamard']
-
+    
+    sketchList = ['Gaussian','Haar','Count','FJLT','FJLT_Hadamard','Subsample']
+    # m, M = 10, 20 
+    m, M = 5, 10
+    print(' ===== Testing if the sketches are isotropic =====')
     for sketch in sketchList:
-        TestSketch( (10,20), sketch, nReps = 1000, printEvery=250)
+        print(f'\n\t--Sketch type: {sketch}--')
+        TestSketch( (m,M), sketch, nReps = 1000, printEvery=250)
+
+    # Now, check adjoints for the implicit methods
+    print(f'\n\n ===== For implicit sketches, testing if adjoint is correct =====')
+    sketchList = ['FJLT','FJLT_Hadamard','Subsample']
+    rng=np.random.default_rng()
+    print(f'\nNow testing adjoints')
+    for sketch in sketchList:
+        S = Sketch( sketch, (m,M), rng=rng )
+        TestAdjoints( S, At=None, printMatrices = True, tol = 1e-10 )#, method='explicit' )
+    
+    print(f'\n\n ===== Now doing Subsampling sketch test with non-uniform weights =====')
+    wts = np.ones(M)
+    wts[0] = 10
+    wts[1] = 2
+    wts[2] = .1
+    Sfcn   = lambda  : Subsample( (m,M), weights=wts )
+    print('   ... testing if the sketch is isotropic')
+    TestSketch( (m,M), Sfcn, nReps = 1000, printEvery=250)
+    print('   ... testing if the adjoint is correct')
+    TestAdjoints( Sfcn() , At=None, printMatrices = True, tol = 1e-10 )#, method='explicit' )
