@@ -13,6 +13,8 @@ HW solutions are on Canvas
 - [HW 7](APPM5650Fall21_RandomizedAlgos_HW07.pdf), due Monday Oct 11, 2021 (topics: least squares)
 - [HW 8](APPM5650Fall21_RandomizedAlgos_HW08.pdf), due Monday Oct 18, 2021 (topics: entry-wise sampling)
 - [HW 9](APPM5650Fall21_RandomizedAlgos_HW09.pdf), due Monday Oct 25, 2021 (topics: randomized K-means clustering)
+- [HW 10](APPM5650Fall21_RandomizedAlgos_HW10.pdf), due Monday Nov 1, 2021 (topics: randomized SVD). Last Homework
+- [Project information](ProjectInformation.md). The project is due Monday Dec 6 2021, and we'll have presentations the last two days of class (Dec 6 and 8).
 
 # Turning in HW
 While the class meets in person, please turn in **hard-copies** of your homework in class.
