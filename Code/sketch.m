@@ -25,7 +25,11 @@ function [fcn,S] = sketch( m, M, typeOfSketch, performTest, varargin )
 %       'weights'  (for subsample, if you want it non-uniform)
 %       'nReps'    (for how many repetitions to use when testing)
 %
-% Stephen Becker, Feb 2019
+% Stephen Becker, Feb 2019, updates Oct 2021
+
+% todo: instead of countSketch_slow, make a sparse matrix,
+%   as in scipy.linalg.clarkson_woodruff_transform
+% todo: create adjoints, as in the python version of this code
 
 S   = [];
 if nargin < 4 || isempty(performTest)
@@ -34,7 +38,8 @@ end
 
 
 prs = inputParser;
-addParameter(prs,'sparsity',.01);
+defaultSparsity = 0.01;
+addParameter(prs,'sparsity',defaultSparsity);
 addParameter(prs,'weights',[]);
 addParameter(prs,'nReps',100);
 parse(prs,varargin{:});
@@ -52,7 +57,7 @@ if performTest
     printEvery  = round( nReps / 10 );
     for rep = 1:nReps
         % Call this own function recursively
-        [~,S]   = sketch( m, M, typeOfSketch );
+        [~,S]   = sketch( m, M, typeOfSketch, false, varargin{:} ); % 10/26/21 fixed bug here
         sumS    = sumS + S'*S;
         if nargout > 0
             errHist(rep) = norm( sumS/rep - eye(M), 'fro' )/M;
@@ -71,7 +76,7 @@ if performTest
     sumS    = sumS/nReps;
     fprintf('The first 5 x 5 block of sampleMean is: \n');
     disp( sumS(1:5,1:5) );
-    fprintf('Average diagonal entry is %.3f, should be 1\n', mean(diag(sumS)) );
+    fprintf('Average diagonal entry is %.7f, should be 1\n', mean(diag(sumS)) );
     if nargout > 0
         fcn     = errHist;
     end
@@ -147,7 +152,11 @@ switch lower(typeOfSketch)
         
     case 'sparse'
         S   = sign(sprandn(m,M,sparsity));
-        sparsity_actual = nnz(S)/(m*M); % often slightly under sparse
+        nz = nnz(S);
+        if nz == 0
+            warning('skech:sparse','Sparse sketch is all zeros! Increase sparsity and/or dimensions');
+        end
+        sparsity_actual = nz/(m*M); % often slightly under sparse
         S   = sqrt(1/(m*sparsity_actual))*S; % we may not have had exactly sparsity*m*n entries
         fcn = @(A) S*A;
         
@@ -157,9 +166,10 @@ switch lower(typeOfSketch)
             subsample   = @(X) X(ind,:);
             fcn     = @(A) sqrt(M/m)*subsample(A);
         else
+            weights = weights/sum(weights); % normalize to a valid probability
             ind     = randsample( M, m, true, weights );
             subsample   = @(X) X(ind,:);
-            fcn     = @(A) spdiags(sqrt(weights./m),0,m,m)*subsample(A);
+            fcn     = @(A) spdiags(sqrt(1./(m*weights(ind))),0,m,m)*subsample(A);
         end
     otherwise
         error('Invalid type of sketch requested');
