@@ -10,8 +10,8 @@ x0      = zeros(N,1);
 x0( randperm(N,s) )     = rand(s,1); % random entries
 
 % Try this for different values of m. How low can you go?
-% m       = 4*s;
-m       = round( 2.5*s ); % theoretical lower limit is 2*s
+m       = 4*s;
+% m       = round( 2.5*s ); % theoretical lower limit is 2*s
 A       = randn(m,N);   % Sensing matrix
 
 % figure(1); clf; imagesc(A); axis image
@@ -43,12 +43,19 @@ legend('Original','l1','l2','location','best');
 nchoosek(N,s)  % # of permutations to try
 
 % Make a list of all permutations... or not. Pretty slow!
+% This is even't account for the cost required per permutation
 tic;
 list = nchoosek( 1:N, 2 );
 toc
+
 tic;
 list = nchoosek( 1:N, 3 );
 toc
+
 tic;
 list = nchoosek( 1:N, 4 );
+toc
+
+tic;
+list = nchoosek( 1:N, 5 );
 toc
