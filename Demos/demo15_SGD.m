@@ -25,10 +25,7 @@ parameters)
 
 %}
 
-addpath ~/Repos/randomized-algorithm-class/Code/
-addpath('~/Google Drive/TeachingDocs/APPM4720_5720_Spring19_Randomized/Code');
-
-load mnist_data_all
+load('~/Google Drive/TeachingDocs/APPM5650_Fall21_Randomized/Code/mnist_data_all.mat');
 percentCorrect = @(labels1,labels2) length(find(labels1==labels2))/length(labels1);
 
 %% In prep for SVM, reduce to just two labels
@@ -47,6 +44,8 @@ Test_labels_2class     = Test_labels( indx );
 Test_labels_2class( Test_labels_2class==A ) = -1;
 Test_labels_2class( Test_labels_2class==B ) = +1;
 Test_2class            = Test( indx, : );
+
+clear Test Test_labels Train Train_labels
 
 hist(Train_labels_2class ) % make sure it looks OK, about equal
 %% Plot hinge loss
@@ -103,11 +102,20 @@ for ALGO = 1:length(ALGONAMES)
         % hinge(a) = max( 0, 1 - a )
         % so d(hinge)/da = { -1 (a <= 1); 0 (a > 1) }
 
+        % for SGD without minibatch, let's take more steps
+        extraStepsBase = 100;
+        if ALGO == 2 || ALGO == 3
+            extraSteps = extraStepsBase;
+        else
+            extraSteps = 1;
+        end
+        
+        for steps = 1:extraSteps
         switch ALGO
-            case 1
+            case 1  % deterministic gradient descent (full batch)
                 a   = yX*w;     % helper variable
                 grad  = yX'*( -(a<=1) ); % full gradient step
-            case {2,3}
+            case {2,3} % SGD, single draw
                 ind     = randperm(N,1);
                 a       = yX(ind,:)*w;     % helper variable
                 grad    = N*yX(ind,:)'*( -(a<=1) );
@@ -154,7 +162,7 @@ for ALGO = 1:length(ALGONAMES)
                 
         end
         
-        if decay_gamma && ~mod( k, 50 )
+        if decay_gamma && ~mod( k, 50*extraSteps )
             gamma   = gamma/2;
         end
     
@@ -162,6 +170,7 @@ for ALGO = 1:length(ALGONAMES)
         if ALGO ~= 6 % SVRG does its own update
             w   = w - gamma*(C1*w + C2*grad );
         end
+        end % end extraSteps
         
         % Record metrics:
         % Cost function (expensive to calculate... for academic purposes)
@@ -181,37 +190,44 @@ for ALGO = 1:length(ALGONAMES)
         end
     end
 end
-%%
+%% Plot, x-axis is iteration (so misleading)
 figure(1); clf;
 % subplot(1,3,1)
-offset = min( min( errList(:,:,1) ) )-1e-1;
+offset = min( min( errList(:,:,1) ) )-1e-5; 
 semilogy( errList(1,:,1) - offset, 'linewidth',2 )
 hold all
-semilogy( errList(2,:,1) - offset, 'linewidth',2 )
-semilogy( errList(3,:,1) - offset, 'linewidth',2 )
+% semilogy( errList(2,:,1) - offset, 'linewidth',2 )
+% semilogy( errList(3,:,1) - offset, 'linewidth',2 )
+semilogy( linspace(0,maxIts*extraStepsBase,maxIts), errList(2,:,1) - offset, 'linewidth',2 )
+semilogy( linspace(0,maxIts*extraStepsBase,maxIts), errList(3,:,1) - offset, 'linewidth',2 )
+
 semilogy( errList(4,:,1) - offset, 'linewidth',2 )
 semilogy( errList(5,:,1) - offset, 'linewidth',2 )
 semilogy( errList(6,:,1) - offset, 'linewidth',2 )
 title('SVM Objective fuction - true value');
+ylabel('SVM Objective fuction - true value');
 xlabel('Iteration');
+% xlim([0,maxIts]);
 legend( ALGONAMES )
-%% Replot, with corrected x-axis
+%% Replot, with corrected x-axis (now epochs)
 figure(1); clf;
 % subplot(1,3,1)
+% plotFcn = @semilogy;
 plotFcn = @loglog;
 plotFcn( errList(1,:,1) - offset, 'linewidth',2 )
 hold all
-plotFcn( linspace(0,maxIts/N,maxIts), errList(2,:,1) - offset, 'linewidth',2 )
-plotFcn( linspace(0,maxIts/N,maxIts), errList(3,:,1) - offset, 'linewidth',2 )
+plotFcn( linspace(0,maxIts/N*extraStepsBase,maxIts), errList(2,:,1) - offset, 'linewidth',2 )
+plotFcn( linspace(0,maxIts/N*extraStepsBase,maxIts), errList(3,:,1) - offset, 'linewidth',2 )
 plotFcn( linspace(0,maxIts/minibatch_n,maxIts), errList(4,:,1) - offset, 'linewidth',2 )
 plotFcn( 1+linspace(0,maxIts/minibatch_n,maxIts), errList(5,:,1) - offset, 'linewidth',2 )
 plotFcn( 1:2:(2*maxIts), errList(6,:,1) - offset, 'linewidth',2 )
-title('SVM Objective fuction');
+title('SVM Objective fuction - true value');
+ylabel('SVM Objective fuction - true value');
 xlabel('Epoch');
 legend( ALGONAMES )
 % xlim([0,3]);
 
-%% Look at miss-classification rate
+%% Look at miss-classification rate (x-axis is iteration, misleading)
 figure(1); clf;
 errMetric   = 2; % train
 % errMetric   = 3; % test
@@ -219,8 +235,8 @@ errMetric   = 2; % train
 plotFcn = @plot;
 plotFcn( 1-errList(1,:,errMetric), 'linewidth',2 )
 hold all
-plotFcn( 1-errList(2,:,errMetric), 'linewidth',2 )
-plotFcn( 1-errList(3,:,errMetric), 'linewidth',2 )
+plotFcn( linspace(0,maxIts*extraStepsBase,maxIts), 1-errList(2,:,errMetric), 'linewidth',2 )
+plotFcn( linspace(0,maxIts*extraStepsBase,maxIts), 1-errList(3,:,errMetric), 'linewidth',2 )
 plotFcn( 1-errList(4,:,errMetric), 'linewidth',2 )
 plotFcn( 1-errList(5,:,errMetric), 'linewidth',2 )
 plotFcn( 1-errList(6,:,errMetric), 'linewidth',2 )
@@ -230,18 +246,24 @@ ylabel('Missclassification rate');
 legend( ALGONAMES )
 xlabel('Iteration');
 ylim([0,.15]);
+xlim([0,maxIts]);
 %% Look at miss-classification rate, corrected axis
 figure(1); clf;
-errMetric   = 3;
+% errMetric   = 2; % train
+errMetric   = 3;% test
 plotFcn = @loglog;
 plotFcn( 1-errList(1,:,errMetric), 'linewidth',2 )
 hold all
-plotFcn( linspace(0,maxIts/N,maxIts), 1-errList(2,:,errMetric), 'linewidth',2 )
-plotFcn( linspace(0,maxIts/N,maxIts), 1-errList(3,:,errMetric), 'linewidth',2 )
+plotFcn( linspace(0,maxIts/N*extraStepsBase,maxIts), 1-errList(2,:,errMetric), 'linewidth',2 )
+plotFcn( linspace(0,maxIts/N*extraStepsBase,maxIts), 1-errList(3,:,errMetric), 'linewidth',2 )
 plotFcn( linspace(0,maxIts/minibatch_n,maxIts), 1-errList(4,:,errMetric), 'linewidth',2 )
 plotFcn( 1+linspace(0,maxIts/minibatch_n,maxIts), 1-errList(5,:,errMetric), 'linewidth',2 )
 plotFcn( 1:2:(2*maxIts), 1-errList(6,:,errMetric), 'linewidth',2 )
-title('Error, testing data');
+if errMetric == 2
+    title('Error, training data');
+elseif errMetric == 3
+    title('Error, testing data');
+end
 ylabel('Missclassification rate');
 legend( ALGONAMES )
 xlabel('Epoch');
