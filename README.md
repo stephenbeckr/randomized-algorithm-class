@@ -19,3 +19,6 @@ Other material (grades, HW solutions) are in our LMS [Canvas](https://canvas.col
 - Spring 2019. Here is a [PDF showing a brief summary of the end-of-semester student projects from Spring '19](SlideshowAllPresentations_4720Spr19_Randomized.pdf).  If you're interested in the Shazam-like song matching algorithm (using locality sensitive hashing), their code is at [Padraig's github site](https://github.com/Lysandr/minHash_Shazam)
 
 [![image for spring 2019](SlideshowAllPresentations_4720Spr19_Randomized.jpeg)](SlideshowAllPresentations_4720Spr19_Randomized.pdf)
+
+- Fall 2021:
+[![image for fall 2021](SlideshowAllPresentations_5650_Fall21.jpg)](SlideshowAllPresentations_5650_Fall21.pdf)
