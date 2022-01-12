@@ -21,4 +21,5 @@ Other material (grades, HW solutions) are in our LMS [Canvas](https://canvas.col
 [![image for spring 2019](SlideshowAllPresentations_4720Spr19_Randomized.jpeg)](SlideshowAllPresentations_4720Spr19_Randomized.pdf)
 
 - Fall 2021:
+
 [![image for fall 2021](SlideshowAllPresentations_5650_Fall21.jpg)](SlideshowAllPresentations_5650_Fall21.pdf)
