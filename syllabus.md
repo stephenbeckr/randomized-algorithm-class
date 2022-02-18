@@ -27,6 +27,7 @@ Location: ECCR 257 "Newton Lab" (this is in the engineering center, classroom wi
 3 hours per week, hold in a hybrid fashion: attend the physical office (338 ECOT) or via zoom (link is posted in Canvas)
 
 Times: 
+
 - (Wed office hours are now permanently on Friday, since HW is now due Monday)
 - Thu 3 to 5 PM
 - Fri 3 to 4 PM
@@ -62,6 +63,7 @@ The overall grade may be **curved** as appropriate (not guaranteed), but note th
 In general, **late homework** assignments are not accepted; instead, you can use your one dropped homework.  Under exceptional circumstances (such as serious illness, including COVID-19, or serious family issues), homework can be turned in late.  If the reason is foreseeable (e.g., planned travel), you must contact the instructor in advance.
 
 Examples:
+
 - Your sister is getting married and you have to travel out-of-state.  That's great, but this is when you use the one dropped homework. This is foreseeable, and not an "emergency", so it does not count as an exceptional circumstance.
 - A close family member becomes infected with COVID-19 and you have to return to your home country to take care of family.  This *does* count as an exceptional circumstance. Please email the instructor to discuss arrangements.
 
@@ -85,6 +87,7 @@ We will use [github](https://github.com/stephenbeckr/randomized-algorithm-class)
 The class is intended to be in person, but in the event we switch to remote, we will use zoom.
 
 On zoom, please have your webcam on if at all possible
+
 - Valid reasons for not having the camera on: to protect the privacy of your family or roommate, if you cannot have a virtual background
 - Invalid reason: you don't feel like it, or you didn't wash your hair.
 
@@ -137,6 +140,7 @@ We do **not** recommend using C, C++ or Fortran for programming in this class; t
 ## Rough list of topics
 
 **Part 1: Preliminaries**
+
 1. How a computer works according to a mathematician
 2. Blocked computations, BLAS, memory hierarchy, single-pass methods
 3. Applied linear algebra facts, matrix multiplication, norms, Eckart-Young etc.
@@ -145,6 +149,7 @@ We do **not** recommend using C, C++ or Fortran for programming in this class; t
 6. Basic probability: Chebyshev, Markov and Bernstein/Chernoff inequalities
 
 **Part 2: Sketches and randomized dimensionality transforms**
+
 1. Gaussian and Haar distribution
 2. Johnson-Lindenstrauss Lemma, subspace embeddings
 3. Fast JL versions
@@ -152,6 +157,7 @@ We do **not** recommend using C, C++ or Fortran for programming in this class; t
 5. Selection via leverage scores
 
 **Part 3: The Good Stuff**
+
 1. Least squares/regression, iterative Hessian Sketch, BLENDENPIK and LSRN 2. SVD decompositions
 3. One-pass SVD decompositions
 4. Nystrom, CX, CUR and ID decompositions (CSSP)
@@ -163,6 +169,7 @@ We do **not** recommend using C, C++ or Fortran for programming in this class; t
 10. Variance reduced SGD, e.g., SVRG, SAGA
 
 **Possible additional topics**
+
 1. Monte Carlo and quasi-Monte Carlo
 2. Analysis of K-means++
 3. Sketching with conditional gradient/Frank-Wolfe: “sketchy decisions”
