@@ -31,7 +31,7 @@ from scipy.sparse.linalg import LinearOperator, aslinearoperator, onenormest
 from scipy.fft    import dct, idct
 import logging
 
-__all__ = ['fwht','Sketch','Gaussian','Haar','Count','FJLT','FJLT_Hadamard','Subsample',
+__all__ = ['fwht','Sketch','Gaussian','Spherical','Rademacher','Haar','Count','FJLT','FJLT_Hadamard','Subsample',
     'Implicit2Explicit','TestAdjoints','TestSketch','spectral_norm']
 
 
@@ -49,17 +49,36 @@ def Sketch( fcnName, *args, **kwargs ):
     """
 
     sketchTypes = {'gaussian':Gaussian, 'jlt':Gaussian, 'haar':Haar,'subsample':Subsample,
-        'count':Count, 'fjlt':FJLT, 'fjlt_dct':FJLT, 'fjlt_hadamard':FJLT_Hadamard }
+        'count':Count, 'fjlt':FJLT, 'fjlt_dct':FJLT, 'fjlt_hadamard':FJLT_Hadamard,
+        'spherical':Spherical, 'rademacher':Rademacher}
     
     try:
         fcn=sketchTypes[fcnName.lower()]
     except KeyError:
-        raise ValueError("Invalid sketch type: should be one of 'Gaussian','Haar','Count','FJLT','FJLT_Hadamard'") 
+        raise ValueError("Invalid sketch type: should be one of 'Gaussian'/'JLT','Haar','Count','FJLT','FJLT_Hadamard','Spherical' or 'Rademacher'") 
     return fcn( *args, **kwargs )
 
 def Gaussian(sz, rng=np.random.default_rng() ):
     m, M    = sz
     return aslinearoperator( rng.standard_normal( size=(m,M) )/np.sqrt(m) )
+
+def Spherical(sz, rng=np.random.default_rng() ):
+    """ Spherical( (m,M) ) returns a sketching function
+    that is like a normalized Gaussian, then normalized
+    so that E[ S^T S ] = I """
+    m, M    = sz
+    S       = rng.standard_normal( size=(m,M) )
+    S       /= norm(S,axis=1).reshape((-1,1)) # normalized columns
+    return aslinearoperator( S*np.sqrt(M/m) )
+
+def Rademacher(sz, rng=np.random.default_rng() ):
+    """ Rademacher( (m,M) ) returns a sketching function
+    that is iid +/- ones, then normalized
+    so that E[ S^T S ] = I """
+    m, M    = sz
+    # if this turns out to be slow for large dimensions, could threshold a Gaussian, or many other options
+    S       = rng.choice( [-1,1], size=(m,M), shuffle=False )
+    return aslinearoperator( S*np.sqrt(1/m) )
 
 def Haar(sz,  rng=np.random.default_rng() ):
     m, M    = sz
@@ -481,7 +500,7 @@ def spectral_norm(A, tol=1e-8, max_iter=1000):
 if __name__ == '__main__':
 
     
-    sketchList = ['Gaussian','Haar','Count','FJLT','FJLT_Hadamard','Subsample']
+    sketchList = ['Gaussian','Haar','Spherical','Rademacher','Count','FJLT','FJLT_Hadamard','Subsample']
     # m, M = 10, 20 
     m, M = 5, 10
     print(' ===== Testing if the sketches are isotropic =====')
